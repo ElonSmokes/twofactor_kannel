@@ -79,6 +79,11 @@ class StateStorage {
 				$this->deleteUserValue(
 					$state->getUser(),
 					$state->getGatewayName(),
+					'identifier'
+				);
+				$this->deleteUserValue(
+					$state->getUser(),
+					$state->getGatewayName(),
 					'verified'
 				);
 				$this->deleteUserValue(

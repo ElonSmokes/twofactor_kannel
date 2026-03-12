@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use OCP\Util;
 
-Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup');
+Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v2');
 ?>
 <div
 	id="twofactor-kannel-login-setup"
