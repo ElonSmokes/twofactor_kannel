@@ -9,7 +9,7 @@
 	<name>Two-Factor Kannel</name>
 	<summary>SMS two-factor authentication via Kannel</summary>
 	<description>A dedicated Nextcloud two-factor authentication provider that sends verification codes via SMS through a Kannel gateway.</description>
-	<version>2.2.2</version>
+	<version>2.2.3</version>
 	<licence>agpl</licence>
 	<author>Christoph Wurst</author>
 	<author>Vitor Mattos</author>
