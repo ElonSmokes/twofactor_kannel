@@ -158,6 +158,7 @@ abstract class AProvider implements IProvider, IProvidesIcons, IDeactivatableByA
 				$template->assign('stateUrl', $baseUrl);
 				$template->assign('startUrl', $baseUrl . '/start');
 				$template->assign('finishUrl', $baseUrl . '/finish');
+				$template->assign('revokeUrl', $baseUrl);
 				return $template;
 			}
 		};

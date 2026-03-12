@@ -40,6 +40,7 @@ class PersonalSettings implements IPersonalProviderSettings {
 		$template->assign('stateUrl', $baseUrl);
 		$template->assign('startUrl', $baseUrl . '/start');
 		$template->assign('finishUrl', $baseUrl . '/finish');
+		$template->assign('revokeUrl', $baseUrl);
 		$template->assign('showProceed', false);
 		return $template;
 	}

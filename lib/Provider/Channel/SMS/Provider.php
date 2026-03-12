@@ -15,11 +15,11 @@ class Provider extends AProvider {
 
 	#[\Override]
 	public function getDisplayName(): string {
-		return $this->l10n->t('Kannel SMS verification');
+		return $this->l10n->t('SMS verification');
 	}
 
 	#[\Override]
 	public function getDescription(): string {
-		return $this->l10n->t('Authenticate via SMS through Kannel');
+		return $this->l10n->t('Authenticate via SMS');
 	}
 }

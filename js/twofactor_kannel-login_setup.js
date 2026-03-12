@@ -14,6 +14,7 @@
 		codeStep: document.getElementById('twofactor-kannel-login-setup-step-code'),
 		code: document.getElementById('twofactor-kannel-login-setup-code'),
 		finish: document.getElementById('twofactor-kannel-login-setup-finish'),
+		cancel: document.getElementById('twofactor-kannel-login-setup-cancel'),
 		proceed: document.getElementById('twofactor-kannel-login-setup-proceed'),
 	};
 
@@ -25,12 +26,14 @@
 		state: root.dataset.stateUrl,
 		start: root.dataset.startUrl,
 		finish: root.dataset.finishUrl,
+		revoke: root.dataset.revokeUrl,
 	};
 
 	const STATE_DISABLED = 0;
 	const STATE_VERIFYING = 2;
 	const STATE_ENABLED = 3;
 	let countdownTimer = null;
+	let activePhoneNumber = '';
 
 	function setError(message) {
 		if (!message) {
@@ -45,6 +48,9 @@
 	function setBusy(isBusy) {
 		els.start.disabled = isBusy;
 		els.finish.disabled = isBusy;
+		if (els.cancel) {
+			els.cancel.disabled = isBusy;
+		}
 	}
 
 	function setMeta(message) {
@@ -79,6 +85,12 @@
 	}
 
 	function showDisabled() {
+		if (countdownTimer) {
+			window.clearInterval(countdownTimer);
+			countdownTimer = null;
+		}
+		activePhoneNumber = '';
+		els.code.value = '';
 		if (defaultPhone) {
 			els.message.textContent = 'Use the phone number stored in your account to enable ' + displayName + '.';
 			els.identifier.value = defaultPhone;
@@ -96,6 +108,7 @@
 	}
 
 	function showVerifying(phoneNumber, resendAvailableAt, expiresAt) {
+		activePhoneNumber = phoneNumber || '';
 		els.message.textContent = 'A confirmation code was sent to ' + phoneNumber + '.';
 		els.identifierStep.hidden = true;
 		els.codeStep.hidden = false;
@@ -104,6 +117,10 @@
 	}
 
 	function showEnabled(phoneNumber) {
+		if (countdownTimer) {
+			window.clearInterval(countdownTimer);
+			countdownTimer = null;
+		}
 		const suffix = phoneNumber ? ' for ' + phoneNumber : '';
 		els.message.textContent = displayName + ' is configured' + suffix + '.';
 		els.identifierStep.hidden = true;
@@ -204,13 +221,28 @@
 				method: 'POST',
 				body: new URLSearchParams({ verificationCode }),
 			});
-			showEnabled(els.identifier.value.trim());
+			showEnabled(activePhoneNumber || els.identifier.value.trim() || maskedPhone || defaultPhone);
 		} catch (error) {
 			setError(error.message);
 		} finally {
 			setBusy(false);
 		}
 	});
+
+	if (els.cancel) {
+		els.cancel.addEventListener('click', async function() {
+			setBusy(true);
+			setError('');
+			try {
+				await request(urls.revoke, { method: 'DELETE' });
+				showDisabled();
+			} catch (error) {
+				setError(error.message);
+			} finally {
+				setBusy(false);
+			}
+		});
+	}
 
 	loadState();
 })();

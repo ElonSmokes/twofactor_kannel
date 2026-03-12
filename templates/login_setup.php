@@ -15,6 +15,7 @@ Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup');
 	data-state-url="<?php p($_['stateUrl']); ?>"
 	data-start-url="<?php p($_['startUrl']); ?>"
 	data-finish-url="<?php p($_['finishUrl']); ?>"
+	data-revoke-url="<?php p($_['revokeUrl']); ?>"
 	data-show-proceed="<?php p($_['showProceed'] ? '1' : '0'); ?>"
 >
 	<?php if ($_['instructions'] !== ''): ?>
@@ -40,6 +41,9 @@ Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup');
 		<input id="twofactor-kannel-login-setup-code" type="text" inputmode="numeric" autocomplete="one-time-code" />
 		<button id="twofactor-kannel-login-setup-finish" type="button">
 			<?php p($l->t('Confirm')) ?>
+		</button>
+		<button id="twofactor-kannel-login-setup-cancel" type="button">
+			<?php p($l->t('Cancel')) ?>
 		</button>
 	</div>
 	<p id="twofactor-kannel-login-setup-meta"></p>

@@ -69,7 +69,7 @@ class SettingsController extends OCSController {
 	 * @param string $gateway The gateway type
 	 * @param string $identifier The identifier to use this gateway
 	 *
-	 * @return JSONResponse<Http::STATUS_OK, array{phoneNumber: ?string}, array{}>|JSONResponse<Http::STATUS_BAD_REQUEST, array{message: string}, array{}>
+	 * @return JSONResponse<Http::STATUS_OK, array{phoneNumber: ?string, resendAvailableAt: ?int, expiresAt: ?int}, array{}>|JSONResponse<Http::STATUS_BAD_REQUEST, array{message: string}, array{}>
 	 *
 	 * 200: OK
 	 * 400: User not found
@@ -91,6 +91,8 @@ class SettingsController extends OCSController {
 
 		return new JSONResponse([
 			'phoneNumber' => $state->getIdentifier(),
+			'resendAvailableAt' => $state->getResendAvailableAt(),
+			'expiresAt' => $state->getExpiresAt(),
 		]);
 	}
 

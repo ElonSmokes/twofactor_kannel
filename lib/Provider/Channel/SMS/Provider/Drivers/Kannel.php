@@ -66,10 +66,15 @@ class Kannel extends AProvider {
 
 	#[\Override]
 	public function send(string $identifier, string $message) {
+		$normalizedIdentifier = preg_replace('/\D+/', '', $identifier) ?? '';
+		if ($normalizedIdentifier === '') {
+			throw new MessageTransmissionException('Phone number is empty after normalization');
+		}
+
 		$query = [
 			'username' => $this->getUsername(),
 			'password' => $this->getPassword(),
-			'to' => $identifier,
+			'to' => $normalizedIdentifier,
 			'text' => $message,
 		];
 
