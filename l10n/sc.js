@@ -1,0 +1,22 @@
+OC.L10N.register(
+    "twofactor_kannel",
+    {
+    "Two-Factor Gateway" : "Intrada a duos fatores",
+    "%s is your Nextcloud authentication code" : "%s est su còdighe de autenticatzione tuo de Nextcloud",
+    "Message gateway verification" : "Verìfica cun intrada de messàgios",
+    "Authenticate via SMS" : "Autèntica tràmite SMS",
+    "Signal verification" : "Verìfica de Signal",
+    "Authenticate via Signal" : "Autèntica tràmite Signal",
+    "Telegram verification" : "Verìfica de Telegram",
+    "Authenticate via Telegram" : "Autèntica tràmite Telegram",
+    "Enable" : "Ativa",
+    "Verify" : "Verìfica",
+    "Confirm" : "Cunfirma",
+    "Disable" : "Disativa",
+    "Authentication code" : "Còdighe de autenticatzione",
+    "Submit" : "Imbia",
+    "An access code has been sent to %s" : "Unu còdighe de intrada est istadu imbiadu a%s",
+    "Error while sending the Message. Please try again later or contact the administrator." : "Errore imbiende su messàgiu. Torra·bi a proare tra unu pagu o cuntata s'amministradore.",
+    "Your phone number has changed and had not been re-verified. Use a different two-factor mechanism or contact your admin." : "Su nùmeru de telèfonu tuo est cambiadu e no est istadu ancora verificadu. Imprea unu mecanismu a duos fatores o cuntata s'amministradore tuo."
+},
+"nplurals=2; plural=(n != 1);");

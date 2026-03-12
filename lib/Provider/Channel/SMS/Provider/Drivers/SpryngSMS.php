@@ -1,0 +1,70 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * SPDX-FileCopyrightText: 2024 Ruben de Wit <ruben@iamit.nl>
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+namespace OCA\TwoFactorKannel\Provider\Channel\SMS\Provider\Drivers;
+
+use Exception;
+use OCA\TwoFactorKannel\Exception\MessageTransmissionException;
+use OCA\TwoFactorKannel\Provider\Channel\SMS\Provider\AProvider;
+use OCA\TwoFactorKannel\Provider\FieldDefinition;
+use OCA\TwoFactorKannel\Provider\Settings;
+use OCP\Http\Client\IClient;
+use OCP\Http\Client\IClientService;
+
+/**
+ * @method string getApitoken()
+ * @method static setApitoken(string $apitoken)
+ */
+class SpryngSMS extends AProvider {
+	private IClient $client;
+
+	public function __construct(
+		IClientService $clientService,
+	) {
+		$this->client = $clientService->newClient();
+	}
+
+	public function createSettings(): Settings {
+		return new Settings(
+			id: 'spryngsms',
+			name: 'Spryng',
+			fields: [
+				new FieldDefinition(
+					field: 'apitoken',
+					prompt: 'Please enter your Spryng api token:',
+				),
+			],
+		);
+	}
+
+	#[\Override]
+	public function send(string $identifier, string $message) {
+		try {
+			$this->client->post(
+				'https://rest.spryngsms.com/v1/messages?with%5B%5D=recipients',
+				[
+					'headers' => [
+						'Accept' => 'application/json',
+						'Authorization' => 'Bearer ' . $this->getApitoken(),
+						'Content-Type' => 'application/json',
+					],
+					'json' => [
+						'body' => $message,
+						'encoding' => 'plain',
+						'originator' => 'Nextcloud',
+						'recipients' => [$identifier],
+						'route' => '1',
+					],
+				]
+			);
+		} catch (Exception $ex) {
+			throw new MessageTransmissionException();
+		}
+	}
+}

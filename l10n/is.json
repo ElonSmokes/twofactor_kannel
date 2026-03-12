@@ -1,0 +1,19 @@
+{ "translations": {
+    "Two-Factor Gateway" : "Tveggja-þrepa auðkenningargátt",
+    "%s is your Nextcloud authentication code" : "%s er auðkenningarkóðinn þinn á Nextcloud",
+    "Message gateway verification" : "Gátt fyrir auðkenningu með skilaboðum",
+    "Authenticate via SMS" : "Auðkenning með SMS",
+    "Signal verification" : "Signal sannvottun",
+    "Authenticate via Signal" : "Auðkenning með Signal",
+    "Telegram verification" : "Telegram sannvottun",
+    "Authenticate via Telegram" : "Auðkenning með Telegram",
+    "Verify" : "Sannprófa",
+    "Confirm" : "Staðfesta",
+    "Disable" : "Gera óvirkt",
+    "Authentication code" : "Auðkenningarkóði",
+    "Submit" : "Senda inn",
+    "An access code has been sent to %s" : "Búið er að senda aðgangskóða á %s",
+    "Error while sending the Message. Please try again later or contact the administrator." : "Villa við að senda skilaboðin. Reyndu aftur seinna eða hafðu samband við kerfisstjóra.",
+    "Your phone number has changed and had not been re-verified. Use a different two-factor mechanism or contact your admin." : "Símanúmerið þitt breyttist og er ekki búið að sannreyna það aftur. Notaðu aðra tveggja-þrepa auðkenningaraðferð eða hafðu samband við kerfisstjórann þinn."
+},"pluralForm" :"nplurals=2; plural=(n % 10 != 1 || n % 100 == 11);"
+}

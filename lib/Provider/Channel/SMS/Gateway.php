@@ -1,0 +1,148 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * SPDX-FileCopyrightText: 2024 Christoph Wurst <christoph@winzerhof-wurst.at>
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+namespace OCA\TwoFactorKannel\Provider\Channel\SMS;
+
+use OCA\TwoFactorKannel\AppInfo\Application;
+use OCA\TwoFactorKannel\Exception\ConfigurationException;
+use OCA\TwoFactorKannel\Provider\Channel\SMS\Provider\IProvider;
+use OCA\TwoFactorKannel\Provider\Gateway\AGateway;
+use OCA\TwoFactorKannel\Provider\Settings;
+use OCP\IAppConfig;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
+
+class Gateway extends AGateway {
+	public function __construct(
+		public IAppConfig $appConfig,
+		private Factory $smsProviderFactory,
+	) {
+		parent::__construct($appConfig);
+	}
+
+	#[\Override]
+	public function send(string $identifier, string $message, array $extra = []): void {
+		$this->getProvider()->send($identifier, $message);
+	}
+
+	#[\Override]
+	final public function cliConfigure(InputInterface $input, OutputInterface $output): int {
+		$namespaces = $this->smsProviderFactory->getFqcnList();
+		$names = [];
+		$providers = [];
+		foreach ($namespaces as $ns) {
+			$provider = $this->smsProviderFactory->get($ns);
+			$providers[] = $provider;
+			$names[] = $provider->getSettings()->name;
+		}
+
+		$helper = new QuestionHelper();
+		$choiceQuestion = new ChoiceQuestion('Please choose a SMS provider:', $names);
+		$name = $helper->ask($input, $output, $choiceQuestion);
+		$selectedIndex = array_search($name, $names);
+
+		$provider = $providers[$selectedIndex];
+
+		foreach ($provider->getSettings()->fields as $field) {
+			$id = $field->field;
+			$prompt = $field->prompt . ' ';
+			$defaultVal = $field->default ?? null;
+			$optional = (bool)($field->optional ?? false);
+
+			$answer = (string)$helper->ask($input, $output, new Question($prompt, $defaultVal));
+
+			if ($optional && $answer === '') {
+				$method = 'delete' . $this->toCamel($id);
+				$provider->{$method}();
+				continue;
+			}
+
+			$method = 'set' . $this->toCamel($id);
+			$provider->{$method}($answer);
+		}
+		return 0;
+	}
+
+	#[\Override]
+	public function createSettings(): Settings {
+		try {
+			$settings = $this->getProvider()->getSettings();
+		} catch (ConfigurationException) {
+			$settings = new Settings(
+				name: 'SMS',
+			);
+		}
+		return $settings;
+	}
+
+	#[\Override]
+	public function isComplete(?Settings $settings = null): bool {
+		if ($settings === null) {
+			try {
+				$provider = $this->getProvider();
+			} catch (ConfigurationException) {
+				return false;
+			}
+			$settings = $provider->getSettings();
+		}
+		return parent::isComplete($settings);
+	}
+
+	#[\Override]
+	public function getConfiguration(?Settings $settings = null): array {
+		try {
+			$provider = $this->getProvider();
+			$settings = $provider->getSettings();
+			$config = parent::getConfiguration($settings);
+			$config['provider'] = $settings->name;
+			return $config;
+		} catch (ConfigurationException|\Throwable $e) {
+			$providers = [];
+			foreach ($this->smsProviderFactory->getFqcnList() as $fqcn) {
+				$p = $this->smsProviderFactory->get($fqcn);
+				$p->setAppConfig($this->appConfig);
+				$providerSettings = $p->getSettings();
+				$providers[$providerSettings->name] = parent::getConfiguration($providerSettings);
+			}
+			return [
+				'provider' => 'none',
+				'available_providers' => $providers,
+			];
+		}
+	}
+
+	#[\Override]
+	public function remove(?Settings $settings = null): void {
+		foreach ($this->smsProviderFactory->getFqcnList() as $fqcn) {
+			$provider = $this->smsProviderFactory->get($fqcn);
+			$provider->setAppConfig($this->appConfig);
+			$settings = $provider->getSettings();
+			parent::remove($settings);
+		}
+	}
+
+	public function getProvider(string $providerName = ''): IProvider {
+		if ($providerName) {
+			$this->setProvider($providerName);
+		}
+		$providerName = $this->appConfig->getValueString(Application::APP_ID, 'sms_provider_name');
+		if ($providerName === '') {
+			throw new ConfigurationException();
+		}
+
+		return $this->smsProviderFactory->get($providerName);
+	}
+
+	public function setProvider(string $provider): void {
+		$this->appConfig->setValueString(Application::APP_ID, 'sms_provider_name', $provider);
+	}
+}

@@ -1,0 +1,72 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * SPDX-FileCopyrightText: 2024 Christoph Wurst <christoph@winzerhof-wurst.at>
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+namespace OCA\TwoFactorKannel\Provider\Channel\SMS\Provider\Drivers;
+
+use Exception;
+use OCA\TwoFactorKannel\Exception\MessageTransmissionException;
+use OCA\TwoFactorKannel\Provider\Channel\SMS\Provider\AProvider;
+use OCA\TwoFactorKannel\Provider\FieldDefinition;
+use OCA\TwoFactorKannel\Provider\Settings;
+use OCP\Http\Client\IClient;
+use OCP\Http\Client\IClientService;
+
+/**
+ * @method string getUser()
+ * @method static setUser(string $user)
+ * @method string getPassword()
+ * @method static setPassword(string $password)
+ */
+class WebSms extends AProvider {
+	private IClient $client;
+
+	public function __construct(
+		IClientService $clientService,
+	) {
+		$this->client = $clientService->newClient();
+	}
+
+	public function createSettings(): Settings {
+		return new Settings(
+			id: 'websms_de',
+			name: 'WebSMS.de',
+			fields: [
+				new FieldDefinition(
+					field: 'user',
+					prompt: 'Please enter your websms.de username:',
+				),
+				new FieldDefinition(
+					field: 'password',
+					prompt: 'Please enter your websms.de password:',
+				),
+			]
+		);
+	}
+
+	#[\Override]
+	public function send(string $identifier, string $message) {
+		$user = $this->getUser();
+		$password = $this->getPassword();
+		try {
+			$this->client->post('https://api.websms.com/rest/smsmessaging/text', [
+				'headers' => [
+					'Authorization' => 'Basic ' . base64_encode("$user:$password"),
+					'Content-Type' => 'application/json',
+				],
+				'json' => [
+					'messageContent' => $message,
+					'test' => false,
+					'recipientAddressList' => [$identifier],
+				],
+			]);
+		} catch (Exception $ex) {
+			throw new MessageTransmissionException();
+		}
+	}
+}

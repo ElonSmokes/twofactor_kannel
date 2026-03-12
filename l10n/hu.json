@@ -1,0 +1,27 @@
+{ "translations": {
+    "Two-Factor Gateway" : "Kétlépcsős hitelesítési átjáró",
+    "%s is your Nextcloud authentication code" : "%s a Nextcloud-hitelesítőkódja",
+    "Message gateway verification" : "Üzenetátjáró ellenőrzése",
+    "Authenticate via SMS" : "Hitelesítés SMS-sel",
+    "Signal verification" : "Signal-ellenőrzés",
+    "Authenticate via Signal" : "Hitelesítés Signallal",
+    "Telegram verification" : "Telegram-ellenőrzés",
+    "Authenticate via Telegram" : "Hitelesítés Telegrammal",
+    "XMPP verification" : "XMPP ellenőrzés",
+    "Authenticate via XMPP" : "Hitelesítés XMPP-vel",
+    "You are not using {displayName} for two-factor authentication at the moment." : "Jelenleg nem használja a következőt a kétléőcsős hitelesítéshez: {displayName}.",
+    "Enable" : "Engedélyezés",
+    "Could not verify your code. Please try again." : "A kód nem ellenőrizhető. Próbálja meg újra.",
+    "Enter your identification (e.g. phone number to start the verification):" : "Adja meg az azonosítóját (például a telefonszámát az ellenőrzés megkezdéséhez):",
+    "Verify" : "Ellenőrzés",
+    "A confirmation code has been sent to {phone}. Please insert the code here:" : "Az ellenőrzőkód el lett küldve ide: {phone}. Ide illessze be a kódot:",
+    "Confirm" : "Megerősítés",
+    "Your account was successfully configured to receive messages via {displayName}." : "A fiókjában sikeresen beállította, hogy a következőn keresztül fogadja az üzeneteket: {displayName}.",
+    "Disable" : "Letiltás",
+    "Authentication code" : "Hitelesítőkód",
+    "Submit" : "Beküldés",
+    "An access code has been sent to %s" : "Egy hozzáférési kód el lett küldve ide: %s",
+    "Error while sending the Message. Please try again later or contact the administrator." : "Hiba az üzenet küldése során. Próbálja újra később vagy lépjen kapcsolatba a rendszergazdával.",
+    "Your phone number has changed and had not been re-verified. Use a different two-factor mechanism or contact your admin." : "A telefonszáma megváltozott és nem lett újrahitelesítve. Használjon másik kétlépcsős azonosítási módot, vagy lépjen kapcsolatba a rendszergazdával."
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
+}

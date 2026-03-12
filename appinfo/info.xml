@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+  - SPDX-FileCopyrightText: 2025 LibreCode coop and contributors
+  - SPDX-License-Identifier: AGPL-3.0-or-later
+-->
+<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+	<id>twofactor_kannel</id>
+	<name>Two-Factor Kannel</name>
+	<summary>SMS two-factor authentication via Kannel</summary>
+	<description>A dedicated Nextcloud two-factor authentication provider that sends verification codes via SMS through a Kannel gateway.</description>
+	<version>2.2.2</version>
+	<licence>agpl</licence>
+	<author>Christoph Wurst</author>
+	<author>Vitor Mattos</author>
+	<namespace>TwoFactorKannel</namespace>
+	<documentation>
+		<admin>https://nextcloud-twofactor-gateway.readthedocs.io/en/latest/Admin%20Documentation/</admin>
+	</documentation>
+	<category>security</category>
+	<website></website>
+	<bugs></bugs>
+	<commands>
+		<command>OCA\TwoFactorKannel\Command\Configure</command>
+		<command>OCA\TwoFactorKannel\Command\Status</command>
+		<command>OCA\TwoFactorKannel\Command\Test</command>
+		<command>OCA\TwoFactorKannel\Command\Remove</command>
+	</commands>
+	<dependencies>
+		<php min-version="8.1" max-version="8.5"/>
+		<nextcloud min-version="32" max-version="32"/>
+	</dependencies>
+</info>

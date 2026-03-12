@@ -1,0 +1,56 @@
+<?php return array(
+    'root' => array(
+        'name' => '__root__',
+        'pretty_version' => 'v2.2.2',
+        'version' => '2.2.2.0',
+        'reference' => '0781c8fa4909036303c3303a446a9eae26b3b8ef',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
+    ),
+    'versions' => array(
+        '__root__' => array(
+            'pretty_version' => 'v2.2.2',
+            'version' => '2.2.2.0',
+            'reference' => '0781c8fa4909036303c3303a446a9eae26b3b8ef',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'friendsofphp/php-cs-fixer' => array(
+            'dev_requirement' => true,
+            'replaced' => array(
+                0 => 'v3.93.0',
+            ),
+        ),
+        'kubawerlos/php-cs-fixer-custom-fixers' => array(
+            'pretty_version' => 'v3.35.1',
+            'version' => '3.35.1.0',
+            'reference' => '2a35f80ae24ca77443a7af1599c3a3db1b6bd395',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../kubawerlos/php-cs-fixer-custom-fixers',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'nextcloud/coding-standard' => array(
+            'pretty_version' => 'v1.4.0',
+            'version' => '1.4.0.0',
+            'reference' => '8e06808c1423e9208d63d1bd205b9a38bd400011',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../nextcloud/coding-standard',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+        'php-cs-fixer/shim' => array(
+            'pretty_version' => 'v3.93.0',
+            'version' => '3.93.0.0',
+            'reference' => 'a5666a80c1a02c6b9a63660d023e55ffddbe742e',
+            'type' => 'application',
+            'install_path' => __DIR__ . '/../php-cs-fixer/shim',
+            'aliases' => array(),
+            'dev_requirement' => true,
+        ),
+    ),
+);

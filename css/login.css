@@ -1,0 +1,17 @@
+/**
+ * SPDX-FileCopyrightText: 2025 LibreCode coop and contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
+
+.twofactor_kannel-form {
+	margin: 16px auto 1px !important;
+}
+
+.two-factor-gateway-form > input {
+	padding: 10px;
+	margin: 0 0 5px 0;
+}
+
+.two-factor-gateway-icon {
+	filter: var(--background-invert-if-bright);
+}
