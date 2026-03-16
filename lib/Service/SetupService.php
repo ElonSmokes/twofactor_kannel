@@ -73,8 +73,7 @@ class SetupService {
 
 		$now = $this->timeFactory->getTime();
 		$currentState = $this->stateStorage->get($user, $gatewayName);
-		if ($currentState->getState() === StateStorage::STATE_VERIFYING
-			&& ($currentState->getResendAvailableAt() ?? 0) > $now) {
+		if (($currentState->getResendAvailableAt() ?? 0) > $now) {
 			$wait = ($currentState->getResendAvailableAt() ?? $now) - $now;
 			throw new VerificationException($this->l10n->t('Please wait %s seconds before requesting a new code.', [(string)$wait]));
 		}
@@ -145,6 +144,11 @@ class SetupService {
 	}
 
 	public function disable(IUser $user, string $gatewayName): State {
+		$currentState = $this->stateStorage->get($user, $gatewayName);
+		$resendAvailableAt = $currentState->getState() === StateStorage::STATE_VERIFYING
+			? $currentState->getResendAvailableAt()
+			: null;
+
 		try {
 			$provider = $this->providerFactory->get($gatewayName);
 		} catch (InvalidProviderException) {
@@ -155,7 +159,7 @@ class SetupService {
 
 		try {
 			return $this->stateStorage->persist(
-				State::disabled($user, $gatewayName)
+				State::disabled($user, $gatewayName, $resendAvailableAt)
 			);
 		} catch (Exception $e) {
 			throw new VerificationException($e->getMessage());

@@ -92,7 +92,16 @@ class StateStorage {
 					'verification_code'
 				);
 				$this->deleteUserValue($state->getUser(), $state->getGatewayName(), 'expires_at');
-				$this->deleteUserValue($state->getUser(), $state->getGatewayName(), 'resend_available_at');
+				if (($state->getResendAvailableAt() ?? 0) > 0) {
+					$this->setUserValue(
+						$state->getUser(),
+						$state->getGatewayName(),
+						'resend_available_at',
+						(string)$state->getResendAvailableAt()
+					);
+				} else {
+					$this->deleteUserValue($state->getUser(), $state->getGatewayName(), 'resend_available_at');
+				}
 				$this->deleteUserValue($state->getUser(), $state->getGatewayName(), 'failed_attempts');
 
 				break;

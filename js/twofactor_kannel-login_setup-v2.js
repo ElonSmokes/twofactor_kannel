@@ -122,6 +122,7 @@
 	const STATE_ENABLED = 3;
 	let countdownTimer = null;
 	let activePhoneNumber = '';
+	let startCooldownUntil = 0;
 
 	function normalizeInternationalPhone(phone) {
 		const cleaned = String(phone || '').trim().replace(/[^\d+]/g, '');
@@ -204,18 +205,31 @@
 	}
 
 	function setBusy(isBusy) {
-		els.start.disabled = isBusy;
+		if (isBusy) {
+			els.start.disabled = true;
+		} else {
+			syncStartAvailability();
+		}
 		els.finish.disabled = isBusy;
 		if (els.cancel) {
 			els.cancel.disabled = isBusy;
 		}
 	}
 
+	function syncStartAvailability() {
+		if (els.identifierStep.hidden) {
+			els.start.disabled = false;
+			return;
+		}
+
+		els.start.disabled = startCooldownUntil > (Date.now() / 1000);
+	}
+
 	function setMeta(message) {
 		els.meta.textContent = message || '';
 	}
 
-	function startCountdown(resendAvailableAt, expiresAt) {
+	function startCountdown(resendAvailableAt, expiresAt, onTick) {
 		if (countdownTimer) {
 			window.clearInterval(countdownTimer);
 		}
@@ -224,6 +238,9 @@
 			const now = Date.now() / 1000;
 			const resendSeconds = Math.max(0, Math.ceil((resendAvailableAt || 0) - now));
 			const expirySeconds = Math.max(0, Math.ceil((expiresAt || 0) - now));
+			if (onTick) {
+				onTick(resendSeconds, expirySeconds);
+			}
 			const parts = [];
 			if (resendSeconds > 0) {
 				parts.push('Resend available in ' + resendSeconds + 's');
@@ -242,12 +259,13 @@
 		countdownTimer = window.setInterval(tick, 1000);
 	}
 
-	function showDisabled() {
+	function showDisabled(resendAvailableAt) {
 		if (countdownTimer) {
 			window.clearInterval(countdownTimer);
 			countdownTimer = null;
 		}
 		activePhoneNumber = '';
+		startCooldownUntil = resendAvailableAt || 0;
 		els.code.value = '';
 		if (defaultPhone) {
 			els.message.textContent = 'Use the phone number stored in your account to enable ' + displayName + '.';
@@ -261,11 +279,19 @@
 		els.identifierStep.hidden = false;
 		els.codeStep.hidden = true;
 		els.proceed.hidden = true;
-		setMeta('');
+		if ((resendAvailableAt || 0) > (Date.now() / 1000)) {
+			startCountdown(resendAvailableAt, 0, function(resendSeconds) {
+				els.start.disabled = resendSeconds > 0;
+			});
+		} else {
+			setMeta('');
+			syncStartAvailability();
+		}
 	}
 
 	function showVerifying(phoneNumber, resendAvailableAt, expiresAt) {
 		activePhoneNumber = phoneNumber || '';
+		startCooldownUntil = 0;
 		els.message.textContent = 'A confirmation code was sent to ' + phoneNumber + '.';
 		els.identifierStep.hidden = true;
 		els.codeStep.hidden = false;
@@ -279,6 +305,7 @@
 			countdownTimer = null;
 		}
 		const suffix = phoneNumber ? ' for ' + phoneNumber : '';
+		startCooldownUntil = 0;
 		els.message.textContent = displayName + ' is configured' + suffix + '.';
 		els.identifierStep.hidden = true;
 		els.codeStep.hidden = true;
@@ -333,7 +360,7 @@
 			} else if (data.state === STATE_VERIFYING) {
 				showVerifying(data.phoneNumber || maskedPhone || defaultPhone, data.resendAvailableAt, data.expiresAt);
 			} else {
-				showDisabled();
+				showDisabled(data.resendAvailableAt);
 			}
 		} catch (error) {
 			showDisabled();
@@ -391,8 +418,8 @@
 			setBusy(true);
 			setError('');
 			try {
-				await request(urls.revoke, { method: 'DELETE' });
-				showDisabled();
+				const data = await request(urls.revoke, { method: 'DELETE' });
+				showDisabled(data.resendAvailableAt);
 			} catch (error) {
 				setError(error.message);
 			} finally {

@@ -13,6 +13,9 @@ namespace OCA\TwoFactorKannel;
  *     gatewayName: string,
  *     state: int,
  *     phoneNumber: ?string,
+ *     resendAvailableAt: ?int,
+ *     expiresAt: ?int,
+ *     failedAttempts: int,
  * }
  * @psalm-type TwoFactorKannelCapabilities = array{
  *     features: list<string>,

@@ -56,11 +56,19 @@ class State implements JsonSerializable {
 		);
 	}
 
-	public static function disabled(IUser $user, string $gatewayName): State {
+	public static function disabled(
+		IUser $user,
+		string $gatewayName,
+		?int $resendAvailableAt = null
+	): State {
 		return new State(
 			$user,
 			StateStorage::STATE_DISABLED,
-			$gatewayName
+			$gatewayName,
+			null,
+			null,
+			null,
+			$resendAvailableAt
 		);
 	}
 
