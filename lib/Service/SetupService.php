@@ -44,6 +44,18 @@ class SetupService {
 		return $this->stateStorage->get($user, $gatewayName);
 	}
 
+	private function hashCode(string $code): string {
+		return hash('sha256', $code);
+	}
+
+	private function verifyStoredCode(string $storedCode, string $providedCode): bool {
+		if (preg_match('/^[a-f0-9]{64}$/', $storedCode) === 1) {
+			return hash_equals($storedCode, $this->hashCode($providedCode));
+		}
+
+		return hash_equals($storedCode, $providedCode);
+	}
+
 	/**
 	 * @throws IdentifierMissingException
 	 */
@@ -99,7 +111,7 @@ class SetupService {
 				$user,
 				$gatewayName,
 				$identifier,
-				$verificationNumber,
+				$this->hashCode($verificationNumber),
 				$now + self::CODE_TTL,
 				$now + self::RESEND_COOLDOWN
 			)
@@ -117,7 +129,7 @@ class SetupService {
 			throw new VerificationException($this->l10n->t('The verification code has expired. Request a new one.'));
 		}
 
-		if ($state->getVerificationCode() !== $token) {
+		if (!$this->verifyStoredCode((string)$state->getVerificationCode(), $token)) {
 			$failedState = $state->withFailedAttempt();
 			if ($failedState->getFailedAttempts() >= self::MAX_FAILED_ATTEMPTS) {
 				$this->stateStorage->persist(State::disabled($user, $gatewayName));

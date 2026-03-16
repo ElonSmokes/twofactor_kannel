@@ -45,6 +45,20 @@ class ChallengeService {
 		$this->session->set($this->getStateKey($gatewayName), $state);
 	}
 
+	private function hashCode(string $code): string {
+		return hash('sha256', $code);
+	}
+
+	private function verifyStoredCode(array $state, string $challenge): bool {
+		$storedHash = $state['secret_hash'] ?? null;
+		if (is_string($storedHash) && $storedHash !== '') {
+			return hash_equals($storedHash, $this->hashCode($challenge));
+		}
+
+		$legacySecret = $state['secret'] ?? null;
+		return is_string($legacySecret) && hash_equals($legacySecret, $challenge);
+	}
+
 	public function clear(string $gatewayName): void {
 		$this->session->remove($this->getStateKey($gatewayName));
 		$this->session->remove($this->getSessionKey($gatewayName));
@@ -73,7 +87,7 @@ class ChallengeService {
 			return false;
 		}
 
-		$valid = ($state['secret'] ?? null) === $challenge;
+		$valid = $this->verifyStoredCode($state, $challenge);
 		if ($valid) {
 			$this->clear($gatewayName);
 			return true;
@@ -100,14 +114,14 @@ class ChallengeService {
 		$gateway->send($identifier, $message, ['code' => $secret]);
 
 		$state = [
-			'secret' => $secret,
+			'secret_hash' => $this->hashCode($secret),
 			'identifier' => $identifier,
 			'expires_at' => $now + self::CODE_TTL,
 			'resend_available_at' => $now + self::RESEND_COOLDOWN,
 			'failed_attempts' => 0,
 		];
 		$this->setState($gatewayName, $state);
-		$this->session->set($this->getSessionKey($gatewayName), $secret);
+		$this->session->set($this->getSessionKey($gatewayName), $this->hashCode($secret));
 		return $state;
 	}
 }
