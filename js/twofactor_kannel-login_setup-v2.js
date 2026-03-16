@@ -96,8 +96,14 @@
 		error: document.getElementById('twofactor-kannel-login-setup-error'),
 		meta: document.getElementById('twofactor-kannel-login-setup-meta'),
 		identifierStep: document.getElementById('twofactor-kannel-login-setup-step-identifier'),
+		savedChoice: document.getElementById('twofactor-kannel-login-setup-saved-choice'),
+		useSaved: document.getElementById('twofactor-kannel-login-setup-use-saved'),
+		useOther: document.getElementById('twofactor-kannel-login-setup-use-other'),
+		manualFields: document.getElementById('twofactor-kannel-login-setup-manual-fields'),
+		countrySearch: document.getElementById('twofactor-kannel-login-setup-country-search'),
 		countryCode: document.getElementById('twofactor-kannel-login-setup-country-code'),
 		nationalNumber: document.getElementById('twofactor-kannel-login-setup-national-number'),
+		preview: document.getElementById('twofactor-kannel-login-setup-preview'),
 		start: document.getElementById('twofactor-kannel-login-setup-start'),
 		codeStep: document.getElementById('twofactor-kannel-login-setup-step-code'),
 		code: document.getElementById('twofactor-kannel-login-setup-code'),
@@ -123,12 +129,14 @@
 	let countdownTimer = null;
 	let activePhoneNumber = '';
 	let startCooldownUntil = 0;
+	let useSavedNumber = defaultPhone !== '';
 
 	function normalizeInternationalPhone(phone) {
 		const cleaned = String(phone || '').trim().replace(/[^\d+]/g, '');
 		if (!cleaned) {
 			return '';
 		}
+
 		const normalized = cleaned.startsWith('00') ? '+' + cleaned.slice(2) : cleaned;
 		return /^\+[1-9]\d{7,14}$/.test(normalized) ? normalized : '';
 	}
@@ -152,68 +160,19 @@
 		};
 	}
 
-	function ensureCountryOptions() {
-		if (els.countryCode.options.length > 0) {
-			return;
-		}
-
-		COUNTRY_OPTIONS.forEach(function(option) {
-			const item = document.createElement('option');
-			item.value = option.code;
-			item.textContent = option.label;
-			els.countryCode.appendChild(item);
-		});
-	}
-
-	function setPhoneFields(phone, isReadOnly) {
-		const parts = splitPhoneNumber(phone);
-		if (parts) {
-			if (![...els.countryCode.options].some(function(option) { return option.value === parts.countryCode; })) {
-				const item = document.createElement('option');
-				item.value = parts.countryCode;
-				item.textContent = 'Saved number (' + parts.countryCode + ')';
-				els.countryCode.appendChild(item);
-			}
-			els.countryCode.value = parts.countryCode;
-			els.nationalNumber.value = parts.nationalNumber;
-		} else {
-			els.countryCode.selectedIndex = 0;
-			els.nationalNumber.value = '';
-		}
-
-		els.countryCode.disabled = isReadOnly;
-		els.nationalNumber.readOnly = isReadOnly;
-	}
-
-	function buildInternationalPhone() {
-		const countryCode = els.countryCode.value || '';
-		const nationalNumber = (els.nationalNumber.value || '').replace(/\D+/g, '');
-		if (!countryCode || !nationalNumber) {
-			return '';
-		}
-		return normalizeInternationalPhone(countryCode + nationalNumber);
-	}
-
 	function setError(message) {
 		if (!message) {
 			els.error.hidden = true;
 			els.error.textContent = '';
 			return;
 		}
+
 		els.error.hidden = false;
 		els.error.textContent = message;
 	}
 
-	function setBusy(isBusy) {
-		if (isBusy) {
-			els.start.disabled = true;
-		} else {
-			syncStartAvailability();
-		}
-		els.finish.disabled = isBusy;
-		if (els.cancel) {
-			els.cancel.disabled = isBusy;
-		}
+	function setMeta(message) {
+		els.meta.textContent = message || '';
 	}
 
 	function syncStartAvailability() {
@@ -225,8 +184,116 @@
 		els.start.disabled = startCooldownUntil > (Date.now() / 1000);
 	}
 
-	function setMeta(message) {
-		els.meta.textContent = message || '';
+	function setBusy(isBusy) {
+		els.start.disabled = isBusy ? true : els.start.disabled;
+		els.finish.disabled = isBusy;
+		if (els.cancel) {
+			els.cancel.disabled = isBusy;
+		}
+		if (els.useSaved) {
+			els.useSaved.disabled = isBusy;
+		}
+		if (els.useOther) {
+			els.useOther.disabled = isBusy;
+		}
+
+		if (!isBusy) {
+			syncStartAvailability();
+		}
+	}
+
+	function ensureCountryOptions(filter) {
+		const currentValue = els.countryCode.value;
+		const normalizedFilter = (filter || '').trim().toLowerCase();
+		const filtered = COUNTRY_OPTIONS.filter(function(option) {
+			if (!normalizedFilter) {
+				return true;
+			}
+			return option.label.toLowerCase().includes(normalizedFilter) || option.code.includes(normalizedFilter);
+		});
+
+		els.countryCode.innerHTML = '';
+		filtered.forEach(function(option) {
+			const item = document.createElement('option');
+			item.value = option.code;
+			item.textContent = option.label;
+			els.countryCode.appendChild(item);
+		});
+
+		if (filtered.length === 0) {
+			const item = document.createElement('option');
+			item.value = '';
+			item.textContent = 'No matching country code';
+			els.countryCode.appendChild(item);
+		}
+
+		if (filtered.some(function(option) { return option.code === currentValue; })) {
+			els.countryCode.value = currentValue;
+		}
+	}
+
+	function setPhoneFields(phone) {
+		const parts = splitPhoneNumber(phone);
+		if (!parts) {
+			els.nationalNumber.value = '';
+			ensureCountryOptions(els.countrySearch.value);
+			els.countryCode.selectedIndex = 0;
+			return;
+		}
+
+		els.countrySearch.value = '';
+		ensureCountryOptions('');
+		els.countryCode.value = parts.countryCode;
+		els.nationalNumber.value = parts.nationalNumber;
+	}
+
+	function buildInternationalPhone() {
+		if (useSavedNumber && defaultPhone) {
+			return defaultPhone;
+		}
+
+		const countryCode = els.countryCode.value || '';
+		const nationalNumber = (els.nationalNumber.value || '').replace(/\D+/g, '');
+		if (!countryCode || !nationalNumber) {
+			return '';
+		}
+
+		return normalizeInternationalPhone(countryCode + nationalNumber);
+	}
+
+	function updatePreview() {
+		if (useSavedNumber && defaultPhone) {
+			els.preview.textContent = 'Code will be sent to ' + defaultPhone + '.';
+			return;
+		}
+
+		const normalized = buildInternationalPhone();
+		if (normalized) {
+			els.preview.textContent = 'Code will be sent to ' + normalized + '.';
+			return;
+		}
+
+		els.preview.textContent = 'Enter the number in international format.';
+	}
+
+	function applyIdentifierMode() {
+		const showSavedChoice = defaultPhone !== '';
+		els.savedChoice.hidden = !showSavedChoice;
+		els.manualFields.hidden = useSavedNumber;
+		els.countryCode.disabled = useSavedNumber;
+		els.nationalNumber.readOnly = useSavedNumber;
+
+		if (useSavedNumber && defaultPhone) {
+			setPhoneFields(defaultPhone);
+			els.start.textContent = 'Send code to ' + (maskedPhone || defaultPhone);
+		} else {
+			if (showSavedChoice && buildInternationalPhone() === '') {
+				setPhoneFields('');
+			}
+			els.start.textContent = 'Send code';
+		}
+
+		updatePreview();
 	}
 
 	function startCountdown(resendAvailableAt, expiresAt, onTick) {
@@ -264,21 +331,19 @@
 			window.clearInterval(countdownTimer);
 			countdownTimer = null;
 		}
+
 		activePhoneNumber = '';
 		startCooldownUntil = resendAvailableAt || 0;
 		els.code.value = '';
-		if (defaultPhone) {
-			els.message.textContent = 'Use the phone number stored in your account to enable ' + displayName + '.';
-			setPhoneFields(defaultPhone, true);
-			els.start.textContent = 'Send code to ' + (maskedPhone || defaultPhone);
-		} else {
-			els.message.textContent = 'Select your country and enter the number in international format to enable ' + displayName + '.';
-			setPhoneFields('', false);
-			els.start.textContent = 'Send code';
-		}
 		els.identifierStep.hidden = false;
 		els.codeStep.hidden = true;
 		els.proceed.hidden = true;
+		els.message.textContent = defaultPhone
+			? 'Choose a saved number or another number to enable ' + displayName + '.'
+			: 'Select your country and enter the number in international format to enable ' + displayName + '.';
+
+		applyIdentifierMode();
+
 		if ((resendAvailableAt || 0) > (Date.now() / 1000)) {
 			startCountdown(resendAvailableAt, 0, function(resendSeconds) {
 				els.start.disabled = resendSeconds > 0;
@@ -304,6 +369,7 @@
 			window.clearInterval(countdownTimer);
 			countdownTimer = null;
 		}
+
 		const suffix = phoneNumber ? ' for ' + phoneNumber : '';
 		startCooldownUntil = 0;
 		els.message.textContent = displayName + ' is configured' + suffix + '.';
@@ -370,7 +436,7 @@
 	}
 
 	els.start.addEventListener('click', async function() {
-		const identifier = defaultPhone || buildInternationalPhone();
+		const identifier = buildInternationalPhone();
 		if (!identifier) {
 			setError('Select a country code and enter a valid international phone number.');
 			return;
@@ -428,6 +494,37 @@
 		});
 	}
 
-	ensureCountryOptions();
+	if (els.useSaved) {
+		els.useSaved.addEventListener('click', function() {
+			useSavedNumber = true;
+			applyIdentifierMode();
+			syncStartAvailability();
+		});
+	}
+
+	if (els.useOther) {
+		els.useOther.addEventListener('click', function() {
+			useSavedNumber = false;
+			els.countrySearch.value = '';
+			ensureCountryOptions('');
+			setPhoneFields('');
+			applyIdentifierMode();
+			syncStartAvailability();
+		});
+	}
+
+	els.countrySearch.addEventListener('input', function() {
+		ensureCountryOptions(els.countrySearch.value);
+		updatePreview();
+	});
+
+	els.countryCode.addEventListener('change', updatePreview);
+	els.nationalNumber.addEventListener('input', updatePreview);
+
+	ensureCountryOptions('');
+	if (defaultPhone) {
+		setPhoneFields(defaultPhone);
+	}
+	updatePreview();
 	loadState();
 })();

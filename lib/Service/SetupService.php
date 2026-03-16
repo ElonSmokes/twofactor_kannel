@@ -122,7 +122,7 @@ class SetupService {
 		$state = $this->stateStorage->get($user, $gatewayName);
 		$now = $this->timeFactory->getTime();
 		if (is_null($state->getVerificationCode())) {
-			throw new VerificationException($this->l10n->t('no verification code set'));
+			throw new VerificationException($this->l10n->t('No confirmation code is active. Request a new one.'));
 		}
 		if (($state->getExpiresAt() ?? 0) < $now) {
 			$this->stateStorage->persist(State::disabled($user, $gatewayName));
@@ -136,7 +136,7 @@ class SetupService {
 				throw new VerificationException($this->l10n->t('Too many invalid attempts. Request a new code.'));
 			}
 			$this->stateStorage->persist($failedState);
-			throw new VerificationException($this->l10n->t('verification token mismatch'));
+			throw new VerificationException($this->l10n->t('Incorrect confirmation code. Please try again.'));
 		}
 
 		try {

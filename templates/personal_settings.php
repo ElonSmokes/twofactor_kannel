@@ -25,6 +25,21 @@ Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v2');
 	<p id="twofactor-kannel-login-setup-error" class="warning" hidden></p>
 
 	<div id="twofactor-kannel-login-setup-step-identifier">
+		<div id="twofactor-kannel-login-setup-saved-choice" hidden>
+			<p><?php p($l->t('Choose which number to use')) ?></p>
+			<button id="twofactor-kannel-login-setup-use-saved" type="button">
+				<?php p($l->t('Use saved number')) ?>
+			</button>
+			<button id="twofactor-kannel-login-setup-use-other" type="button">
+				<?php p($l->t('Use another number')) ?>
+			</button>
+		</div>
+		<div id="twofactor-kannel-login-setup-manual-fields" hidden>
+			<label for="twofactor-kannel-login-setup-country-search">
+				<?php p($l->t('Find country')) ?>
+			</label>
+			<input id="twofactor-kannel-login-setup-country-search" type="text" autocomplete="off" />
+		</div>
 		<label for="twofactor-kannel-login-setup-country-code">
 			<?php p($l->t('Country')) ?>
 		</label>
@@ -33,6 +48,7 @@ Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v2');
 			<?php p($l->t('Phone number')) ?>
 		</label>
 		<input id="twofactor-kannel-login-setup-national-number" type="text" inputmode="tel" autocomplete="tel-national" />
+		<p id="twofactor-kannel-login-setup-preview"></p>
 		<button id="twofactor-kannel-login-setup-start" type="button">
 			<?php p($l->t('Send code')) ?>
 		</button>

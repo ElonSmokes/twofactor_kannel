@@ -120,8 +120,8 @@ class SettingsController extends OCSController {
 
 		try {
 			$this->setup->finishSetup($user, $gateway, $verificationCode);
-		} catch (VerificationException) {
-			return new JSONResponse([], Http::STATUS_BAD_REQUEST);
+		} catch (VerificationException $e) {
+			return new JSONResponse(['message' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
 		}
 
 		return new JSONResponse([]);
