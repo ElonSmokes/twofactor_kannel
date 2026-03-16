@@ -63,12 +63,12 @@ class SetupService {
 	 * @throws VerificationException
 	 */
 	public function startSetup(IUser $user, string $gatewayName, string $identifier): State {
-		$identifier = trim($identifier);
+		$identifier = $this->userPhoneService->normalizeInternationalPhone($identifier);
 		if ($identifier === '') {
 			$identifier = $this->userPhoneService->getPhoneNumber($user);
 		}
 		if ($identifier === '') {
-			throw new VerificationException($this->l10n->t('No phone number is configured for your account.'));
+			throw new VerificationException($this->l10n->t('A valid international phone number is required. Use a format like +441234567890.'));
 		}
 
 		$now = $this->timeFactory->getTime();

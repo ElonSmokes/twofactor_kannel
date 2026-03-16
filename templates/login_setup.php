@@ -25,10 +25,14 @@ Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v2');
 	<p id="twofactor-kannel-login-setup-error" class="warning" hidden></p>
 
 	<div id="twofactor-kannel-login-setup-step-identifier">
-		<label for="twofactor-kannel-login-setup-identifier">
+		<label for="twofactor-kannel-login-setup-country-code">
+			<?php p($l->t('Country')) ?>
+		</label>
+		<select id="twofactor-kannel-login-setup-country-code" autocomplete="tel-country-code"></select>
+		<label for="twofactor-kannel-login-setup-national-number">
 			<?php p($l->t('Phone number')) ?>
 		</label>
-		<input id="twofactor-kannel-login-setup-identifier" type="text" autocomplete="tel" />
+		<input id="twofactor-kannel-login-setup-national-number" type="text" inputmode="tel" autocomplete="tel-national" />
 		<button id="twofactor-kannel-login-setup-start" type="button">
 			<?php p($l->t('Send code')) ?>
 		</button>

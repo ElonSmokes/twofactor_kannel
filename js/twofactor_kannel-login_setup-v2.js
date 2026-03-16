@@ -4,12 +4,100 @@
 		return;
 	}
 
+	const COUNTRY_OPTIONS = [
+		{ code: '+1', label: 'United States / Canada (+1)' },
+		{ code: '+7', label: 'Russia / Kazakhstan (+7)' },
+		{ code: '+20', label: 'Egypt (+20)' },
+		{ code: '+27', label: 'South Africa (+27)' },
+		{ code: '+30', label: 'Greece (+30)' },
+		{ code: '+31', label: 'Netherlands (+31)' },
+		{ code: '+32', label: 'Belgium (+32)' },
+		{ code: '+33', label: 'France (+33)' },
+		{ code: '+34', label: 'Spain (+34)' },
+		{ code: '+36', label: 'Hungary (+36)' },
+		{ code: '+39', label: 'Italy (+39)' },
+		{ code: '+40', label: 'Romania (+40)' },
+		{ code: '+41', label: 'Switzerland (+41)' },
+		{ code: '+43', label: 'Austria (+43)' },
+		{ code: '+44', label: 'United Kingdom (+44)' },
+		{ code: '+45', label: 'Denmark (+45)' },
+		{ code: '+46', label: 'Sweden (+46)' },
+		{ code: '+47', label: 'Norway (+47)' },
+		{ code: '+48', label: 'Poland (+48)' },
+		{ code: '+49', label: 'Germany (+49)' },
+		{ code: '+51', label: 'Peru (+51)' },
+		{ code: '+52', label: 'Mexico (+52)' },
+		{ code: '+54', label: 'Argentina (+54)' },
+		{ code: '+55', label: 'Brazil (+55)' },
+		{ code: '+56', label: 'Chile (+56)' },
+		{ code: '+57', label: 'Colombia (+57)' },
+		{ code: '+61', label: 'Australia (+61)' },
+		{ code: '+62', label: 'Indonesia (+62)' },
+		{ code: '+63', label: 'Philippines (+63)' },
+		{ code: '+64', label: 'New Zealand (+64)' },
+		{ code: '+65', label: 'Singapore (+65)' },
+		{ code: '+66', label: 'Thailand (+66)' },
+		{ code: '+81', label: 'Japan (+81)' },
+		{ code: '+82', label: 'South Korea (+82)' },
+		{ code: '+84', label: 'Vietnam (+84)' },
+		{ code: '+86', label: 'China (+86)' },
+		{ code: '+90', label: 'Turkey (+90)' },
+		{ code: '+91', label: 'India (+91)' },
+		{ code: '+92', label: 'Pakistan (+92)' },
+		{ code: '+94', label: 'Sri Lanka (+94)' },
+		{ code: '+98', label: 'Iran (+98)' },
+		{ code: '+211', label: 'South Sudan (+211)' },
+		{ code: '+212', label: 'Morocco (+212)' },
+		{ code: '+213', label: 'Algeria (+213)' },
+		{ code: '+216', label: 'Tunisia (+216)' },
+		{ code: '+218', label: 'Libya (+218)' },
+		{ code: '+220', label: 'Gambia (+220)' },
+		{ code: '+221', label: 'Senegal (+221)' },
+		{ code: '+223', label: 'Mali (+223)' },
+		{ code: '+225', label: 'Ivory Coast (+225)' },
+		{ code: '+230', label: 'Mauritius (+230)' },
+		{ code: '+233', label: 'Ghana (+233)' },
+		{ code: '+234', label: 'Nigeria (+234)' },
+		{ code: '+243', label: 'DR Congo (+243)' },
+		{ code: '+351', label: 'Portugal (+351)' },
+		{ code: '+352', label: 'Luxembourg (+352)' },
+		{ code: '+353', label: 'Ireland (+353)' },
+		{ code: '+354', label: 'Iceland (+354)' },
+		{ code: '+358', label: 'Finland (+358)' },
+		{ code: '+359', label: 'Bulgaria (+359)' },
+		{ code: '+370', label: 'Lithuania (+370)' },
+		{ code: '+371', label: 'Latvia (+371)' },
+		{ code: '+372', label: 'Estonia (+372)' },
+		{ code: '+380', label: 'Ukraine (+380)' },
+		{ code: '+385', label: 'Croatia (+385)' },
+		{ code: '+386', label: 'Slovenia (+386)' },
+		{ code: '+420', label: 'Czech Republic (+420)' },
+		{ code: '+421', label: 'Slovakia (+421)' },
+		{ code: '+852', label: 'Hong Kong (+852)' },
+		{ code: '+880', label: 'Bangladesh (+880)' },
+		{ code: '+886', label: 'Taiwan (+886)' },
+		{ code: '+961', label: 'Lebanon (+961)' },
+		{ code: '+962', label: 'Jordan (+962)' },
+		{ code: '+963', label: 'Syria (+963)' },
+		{ code: '+966', label: 'Saudi Arabia (+966)' },
+		{ code: '+971', label: 'United Arab Emirates (+971)' },
+		{ code: '+972', label: 'Israel (+972)' },
+		{ code: '+973', label: 'Bahrain (+973)' },
+		{ code: '+974', label: 'Qatar (+974)' },
+		{ code: '+975', label: 'Bhutan (+975)' },
+		{ code: '+976', label: 'Mongolia (+976)' },
+		{ code: '+977', label: 'Nepal (+977)' },
+		{ code: '+995', label: 'Georgia (+995)' },
+		{ code: '+998', label: 'Uzbekistan (+998)' },
+	];
+
 	const els = {
 		message: document.getElementById('twofactor-kannel-login-setup-message'),
 		error: document.getElementById('twofactor-kannel-login-setup-error'),
 		meta: document.getElementById('twofactor-kannel-login-setup-meta'),
 		identifierStep: document.getElementById('twofactor-kannel-login-setup-step-identifier'),
-		identifier: document.getElementById('twofactor-kannel-login-setup-identifier'),
+		countryCode: document.getElementById('twofactor-kannel-login-setup-country-code'),
+		nationalNumber: document.getElementById('twofactor-kannel-login-setup-national-number'),
 		start: document.getElementById('twofactor-kannel-login-setup-start'),
 		codeStep: document.getElementById('twofactor-kannel-login-setup-step-code'),
 		code: document.getElementById('twofactor-kannel-login-setup-code'),
@@ -34,6 +122,76 @@
 	const STATE_ENABLED = 3;
 	let countdownTimer = null;
 	let activePhoneNumber = '';
+
+	function normalizeInternationalPhone(phone) {
+		const cleaned = String(phone || '').trim().replace(/[^\d+]/g, '');
+		if (!cleaned) {
+			return '';
+		}
+		const normalized = cleaned.startsWith('00') ? '+' + cleaned.slice(2) : cleaned;
+		return /^\+[1-9]\d{7,14}$/.test(normalized) ? normalized : '';
+	}
+
+	function splitPhoneNumber(phone) {
+		const normalized = normalizeInternationalPhone(phone);
+		if (!normalized) {
+			return null;
+		}
+
+		const match = [...COUNTRY_OPTIONS]
+			.sort(function(a, b) { return b.code.length - a.code.length; })
+			.find(function(option) { return normalized.startsWith(option.code); });
+		if (!match) {
+			return null;
+		}
+
+		return {
+			countryCode: match.code,
+			nationalNumber: normalized.slice(match.code.length),
+		};
+	}
+
+	function ensureCountryOptions() {
+		if (els.countryCode.options.length > 0) {
+			return;
+		}
+
+		COUNTRY_OPTIONS.forEach(function(option) {
+			const item = document.createElement('option');
+			item.value = option.code;
+			item.textContent = option.label;
+			els.countryCode.appendChild(item);
+		});
+	}
+
+	function setPhoneFields(phone, isReadOnly) {
+		const parts = splitPhoneNumber(phone);
+		if (parts) {
+			if (![...els.countryCode.options].some(function(option) { return option.value === parts.countryCode; })) {
+				const item = document.createElement('option');
+				item.value = parts.countryCode;
+				item.textContent = 'Saved number (' + parts.countryCode + ')';
+				els.countryCode.appendChild(item);
+			}
+			els.countryCode.value = parts.countryCode;
+			els.nationalNumber.value = parts.nationalNumber;
+		} else {
+			els.countryCode.selectedIndex = 0;
+			els.nationalNumber.value = '';
+		}
+
+		els.countryCode.disabled = isReadOnly;
+		els.nationalNumber.readOnly = isReadOnly;
+	}
+
+	function buildInternationalPhone() {
+		const countryCode = els.countryCode.value || '';
+		const nationalNumber = (els.nationalNumber.value || '').replace(/\D+/g, '');
+		if (!countryCode || !nationalNumber) {
+			return '';
+		}
+		return normalizeInternationalPhone(countryCode + nationalNumber);
+	}
 
 	function setError(message) {
 		if (!message) {
@@ -93,12 +251,11 @@
 		els.code.value = '';
 		if (defaultPhone) {
 			els.message.textContent = 'Use the phone number stored in your account to enable ' + displayName + '.';
-			els.identifier.value = defaultPhone;
-			els.identifier.readOnly = true;
+			setPhoneFields(defaultPhone, true);
 			els.start.textContent = 'Send code to ' + (maskedPhone || defaultPhone);
 		} else {
-			els.message.textContent = 'Enter your phone number to enable ' + displayName + '.';
-			els.identifier.readOnly = false;
+			els.message.textContent = 'Select your country and enter the number in international format to enable ' + displayName + '.';
+			setPhoneFields('', false);
 			els.start.textContent = 'Send code';
 		}
 		els.identifierStep.hidden = false;
@@ -186,9 +343,9 @@
 	}
 
 	els.start.addEventListener('click', async function() {
-		const identifier = defaultPhone ? '' : els.identifier.value.trim();
-		if (!defaultPhone && !identifier) {
-			setError('Phone number is required');
+		const identifier = defaultPhone || buildInternationalPhone();
+		if (!identifier) {
+			setError('Select a country code and enter a valid international phone number.');
 			return;
 		}
 
@@ -221,7 +378,7 @@
 				method: 'POST',
 				body: new URLSearchParams({ verificationCode }),
 			});
-			showEnabled(activePhoneNumber || els.identifier.value.trim() || maskedPhone || defaultPhone);
+			showEnabled(activePhoneNumber || buildInternationalPhone() || maskedPhone || defaultPhone);
 		} catch (error) {
 			setError(error.message);
 		} finally {
@@ -244,5 +401,6 @@
 		});
 	}
 
+	ensureCountryOptions();
 	loadState();
 })();
