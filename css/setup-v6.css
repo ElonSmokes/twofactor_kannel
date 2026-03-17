@@ -26,7 +26,10 @@
 	border: 1px solid rgba(176, 11, 38, 0.16);
 	border-radius: 18px;
 	box-shadow: 0 16px 36px rgba(85, 16, 30, 0.08);
+	overflow: visible;
 	padding: 22px;
+	position: relative;
+	z-index: 1;
 }
 
 .twofactor-kannel-setup__title {
@@ -66,6 +69,7 @@
 .twofactor-kannel-setup__country-selector {
 	flex: 0 0 118px;
 	position: relative;
+	z-index: 80;
 }
 
 .twofactor-kannel-setup__country-button,
@@ -132,7 +136,7 @@
 	border-radius: 16px;
 	box-shadow: 0 18px 44px rgba(67, 14, 25, 0.14);
 	padding: 8px;
-	z-index: 40;
+	z-index: 4000;
 }
 
 .twofactor-kannel-setup__dropdown-item {

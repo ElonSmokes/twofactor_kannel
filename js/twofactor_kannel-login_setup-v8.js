@@ -182,6 +182,13 @@
 		els.meta.textContent = message || '';
 	}
 
+	function stopCountdown() {
+		if (countdownTimer) {
+			window.clearInterval(countdownTimer);
+			countdownTimer = null;
+		}
+	}
+
 	function syncStartAvailability() {
 		if (els.identifierStep.hidden) {
 			return;
@@ -241,6 +248,7 @@
 	}
 
 	function showIdentifierStep(resendAvailableAt) {
+		stopCountdown();
 		root.classList.remove('twofactor-kannel-setup--verify');
 		els.message.textContent = texts.manualIntro;
 		els.identifierStep.hidden = false;
@@ -255,16 +263,13 @@
 				els.start.disabled = resendSeconds > 0;
 			});
 		} else {
-			if (countdownTimer) {
-				window.clearInterval(countdownTimer);
-				countdownTimer = null;
-			}
 			setMeta('');
 			syncStartAvailability();
 		}
 	}
 
 	function showVerificationStep(phoneNumber, resendAvailableAt, expiresAt) {
+		stopCountdown();
 		activePhoneNumber = phoneNumber;
 		startCooldownUntil = 0;
 		root.classList.add('twofactor-kannel-setup--verify');
@@ -279,11 +284,12 @@
 	}
 
 	function showEnabled() {
+		stopCountdown();
 		root.classList.remove('twofactor-kannel-setup--verify');
 		els.identifierStep.hidden = true;
 		els.codeStep.hidden = true;
 		if (showProceed) {
-			els.message.textContent = texts.success;
+			els.message.textContent = '';
 			els.enabledStep.hidden = true;
 			els.proceed.hidden = false;
 		} else {
@@ -297,9 +303,7 @@
 	}
 
 	function startCountdown(resendAvailableAt, expiresAt, onTick) {
-		if (countdownTimer) {
-			window.clearInterval(countdownTimer);
-		}
+		stopCountdown();
 
 		function tick() {
 			const now = Date.now() / 1000;
