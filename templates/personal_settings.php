@@ -33,8 +33,6 @@ Util::addStyle('twofactor_kannel', 'setup-v10');
 	data-text-expiry="<?php p($l->t('Code expires in {seconds}s')); ?>"
 >
 	<div class="twofactor-kannel-setup__hero">
-		<h2 class="twofactor-kannel-setup__title"><?php p($l->t('Set up SMS verification')) ?></h2>
-		<p class="twofactor-kannel-setup__lead"><?php p($l->t('Add your mobile number to receive one-time sign-in codes by SMS.')) ?></p>
 		<p id="twofactor-kannel-login-setup-message" class="twofactor-kannel-setup__message"></p>
 	</div>
 
