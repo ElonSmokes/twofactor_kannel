@@ -74,7 +74,7 @@ class Kannel extends AProvider {
 		$query = [
 			'username' => $this->getUsername(),
 			'password' => $this->getPassword(),
-			'to' => $normalizedIdentifier,
+			'to' => '++' . $normalizedIdentifier,
 			'text' => $message,
 		];
 
