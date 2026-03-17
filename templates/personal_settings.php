@@ -3,9 +3,8 @@ declare(strict_types=1);
 
 use OCP\Util;
 
-Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v11');
-Util::addStyle('twofactor_kannel', 'setup-v9');
-Util::addStyle('twofactor_kannel', 'flag-icons.min');
+Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v12');
+Util::addStyle('twofactor_kannel', 'setup-v10');
 ?>
 <div
 	id="twofactor-kannel-login-setup"
@@ -21,16 +20,15 @@ Util::addStyle('twofactor_kannel', 'flag-icons.min');
 	data-revoke-url="<?php p($_['revokeUrl']); ?>"
 	data-cancel-mode="reset"
 	data-show-proceed="<?php p($_['showProceed'] ? '1' : '0'); ?>"
-	data-text-manual-intro="<?php p($l->t('Choose your country and enter your number to receive login codes by SMS.')); ?>"
-	data-text-default-preview="<?php p($l->t('Choose a country code and enter your phone number.')); ?>"
+	data-text-intro="<?php p($l->t('SMS verification uses the phone number saved in your profile.')); ?>"
 	data-text-sent="<?php p($l->t('A confirmation code was sent to {phone}.')); ?>"
-	data-text-invalid-phone="<?php p($l->t('Choose a country and enter a valid phone number in international format.')); ?>"
+	data-text-missing-phone="<?php p($l->t('Add a valid phone number to your profile before enabling SMS verification.')); ?>"
 	data-text-code-required="<?php p($l->t('Confirmation code is required')); ?>"
 	data-text-code-placeholder="<?php p($l->t('Enter the code from SMS')); ?>"
 	data-text-success="<?php p($l->t('SMS verification was activated successfully.')); ?>"
 	data-text-enabled-status="<?php p($l->t('SMS verification is currently active.')); ?>"
 	data-text-current-phone="<?php p($l->t('Current phone number: {phone}')); ?>"
-	data-text-country-search="<?php p($l->t('Search country or code')); ?>"
+	data-text-profile-hint="<?php p($l->t('To change the phone number, update it in your profile settings.')); ?>"
 	data-text-resend="<?php p($l->t('Resend available in {seconds}s')); ?>"
 	data-text-expiry="<?php p($l->t('Code expires in {seconds}s')); ?>"
 >
@@ -43,34 +41,10 @@ Util::addStyle('twofactor_kannel', 'flag-icons.min');
 	<p id="twofactor-kannel-login-setup-error" class="warning twofactor-kannel-setup__error" hidden></p>
 
 	<div id="twofactor-kannel-login-setup-step-identifier" class="twofactor-kannel-setup__step twofactor-kannel-setup__panel twofactor-kannel-setup__panel--entry">
-		<div class="twofactor-kannel-setup__phone-row">
-			<div class="twofactor-kannel-setup__country-selector">
-				<button
-					id="twofactor-kannel-login-setup-country-toggle"
-					class="twofactor-kannel-setup__country-button"
-					type="button"
-					aria-haspopup="listbox"
-					aria-expanded="false"
-					aria-controls="twofactor-kannel-login-setup-country-dropdown"
-				></button>
-				<input id="twofactor-kannel-login-setup-country-code" type="hidden" autocomplete="tel-country-code" />
-			</div>
-
-			<input
-				id="twofactor-kannel-login-setup-national-number"
-				class="twofactor-kannel-setup__phone-input"
-				type="text"
-				inputmode="tel"
-				autocomplete="tel-national"
-				placeholder="<?php p($l->t('Phone number')) ?>"
-			/>
+		<div class="twofactor-kannel-setup__profile-box">
+			<strong id="twofactor-kannel-login-setup-profile-phone"></strong>
 		</div>
-		<div
-			id="twofactor-kannel-login-setup-country-dropdown"
-			class="twofactor-kannel-setup__dropdown"
-			role="listbox"
-			hidden
-		></div>
+		<p id="twofactor-kannel-login-setup-profile-hint" class="twofactor-kannel-setup__hint" hidden></p>
 
 		<div class="twofactor-kannel-setup__actions">
 			<button id="twofactor-kannel-login-setup-start" class="primary" type="button">
@@ -101,10 +75,8 @@ Util::addStyle('twofactor_kannel', 'flag-icons.min');
 	<div id="twofactor-kannel-login-setup-step-enabled" class="twofactor-kannel-setup__step twofactor-kannel-setup__panel twofactor-kannel-setup__panel--enabled" hidden>
 		<p id="twofactor-kannel-login-setup-enabled-status" class="twofactor-kannel-setup__success"></p>
 		<p id="twofactor-kannel-login-setup-enabled-phone" class="twofactor-kannel-setup__success"></p>
+		<p id="twofactor-kannel-login-setup-enabled-hint" class="twofactor-kannel-setup__hint"></p>
 		<div class="twofactor-kannel-setup__actions">
-			<button id="twofactor-kannel-login-setup-change-number" class="twofactor-kannel-setup__secondary" type="button">
-				<?php p($l->t('Change number')) ?>
-			</button>
 			<button id="twofactor-kannel-login-setup-disable" class="twofactor-kannel-setup__secondary" type="button">
 				<?php p($l->t('Disable SMS verification')) ?>
 			</button>

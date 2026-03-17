@@ -75,12 +75,9 @@ class SetupService {
 	 * @throws VerificationException
 	 */
 	public function startSetup(IUser $user, string $gatewayName, string $identifier): State {
-		$identifier = $this->userPhoneService->normalizeInternationalPhone($identifier);
+		$identifier = $this->userPhoneService->getPhoneNumber($user);
 		if ($identifier === '') {
-			$identifier = $this->userPhoneService->getPhoneNumber($user);
-		}
-		if ($identifier === '') {
-			throw new VerificationException($this->l10n->t('A valid international phone number is required. Use a format like +441234567890.'));
+			throw new VerificationException($this->l10n->t('A valid international phone number is required in your profile before SMS verification can be enabled.'));
 		}
 
 		$now = $this->timeFactory->getTime();

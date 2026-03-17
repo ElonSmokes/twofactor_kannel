@@ -70,10 +70,7 @@ abstract class AProvider implements IProvider, IProvidesIcons, IDeactivatableByA
 	#[\Override]
 	public function getTemplate(IUser $user): ITemplate {
 		try {
-			$identifier = $this->stateStorage->get($user, $this->getGatewayName())->getIdentifier() ?? '';
-			if ($identifier === '') {
-				$identifier = $this->userPhoneService->getPhoneNumber($user);
-			}
+			$identifier = $this->userPhoneService->getPhoneNumber($user);
 			if ($identifier === '') {
 				return $this->templateManager->getTemplate('twofactor_kannel', 'error');
 			}
