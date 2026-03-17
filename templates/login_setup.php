@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 use OCP\Util;
 
-Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v9');
-Util::addStyle('twofactor_kannel', 'setup-v7');
+Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v10');
+Util::addStyle('twofactor_kannel', 'setup-v8');
 Util::addStyle('twofactor_kannel', 'flag-icons.min');
 ?>
 <div
@@ -53,12 +53,6 @@ Util::addStyle('twofactor_kannel', 'flag-icons.min');
 					aria-controls="twofactor-kannel-login-setup-country-dropdown"
 				></button>
 				<input id="twofactor-kannel-login-setup-country-code" type="hidden" autocomplete="tel-country-code" />
-				<div
-					id="twofactor-kannel-login-setup-country-dropdown"
-					class="twofactor-kannel-setup__dropdown"
-					role="listbox"
-					hidden
-				></div>
 			</div>
 
 			<input
@@ -70,6 +64,12 @@ Util::addStyle('twofactor_kannel', 'flag-icons.min');
 				placeholder="<?php p($l->t('Phone number')) ?>"
 			/>
 		</div>
+		<div
+			id="twofactor-kannel-login-setup-country-dropdown"
+			class="twofactor-kannel-setup__dropdown"
+			role="listbox"
+			hidden
+		></div>
 
 		<div class="twofactor-kannel-setup__actions">
 			<button id="twofactor-kannel-login-setup-start" class="primary" type="button">
