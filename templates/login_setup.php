@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 use OCP\Util;
 
-Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v8');
-Util::addStyle('twofactor_kannel', 'setup-v6');
+Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v9');
+Util::addStyle('twofactor_kannel', 'setup-v7');
 Util::addStyle('twofactor_kannel', 'flag-icons.min');
 ?>
 <div
