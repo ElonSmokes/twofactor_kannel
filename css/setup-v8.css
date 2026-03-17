@@ -68,6 +68,7 @@
 
 .twofactor-kannel-setup__country-selector {
 	flex: 0 0 118px;
+	width: 118px;
 }
 
 .twofactor-kannel-setup__country-button,
@@ -91,6 +92,7 @@
 	padding: 0 14px;
 	text-align: left;
 	width: 100%;
+	height: 100%;
 }
 
 .twofactor-kannel-setup__country-button .fi,
@@ -124,7 +126,7 @@
 
 .twofactor-kannel-setup__dropdown {
 	position: relative;
-	width: 100%;
+	width: 118px;
 	max-height: 280px;
 	overflow-y: auto;
 	background: #fff;
