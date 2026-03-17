@@ -1,0 +1,208 @@
+.twofactor-kannel-setup {
+	max-width: 720px;
+	margin: 0 auto;
+	padding: 20px 0 28px;
+}
+
+.twofactor-kannel-setup__card {
+	background:
+		linear-gradient(180deg, rgba(176, 11, 38, 0.04), rgba(176, 11, 38, 0)),
+		#fff;
+	border: 1px solid rgba(176, 11, 38, 0.16);
+	border-radius: 18px;
+	box-shadow: 0 20px 48px rgba(71, 16, 28, 0.08);
+	color: #22141a;
+	padding: 30px;
+}
+
+.twofactor-kannel-setup__eyebrow {
+	color: #b00b26;
+	font-size: 12px;
+	font-weight: 800;
+	letter-spacing: 0.16em;
+	margin: 0 0 12px;
+	text-transform: uppercase;
+}
+
+.twofactor-kannel-setup__title {
+	color: #22141a;
+	font-size: 32px;
+	font-weight: 800;
+	letter-spacing: -0.03em;
+	line-height: 1.08;
+	margin: 0 0 12px;
+}
+
+.twofactor-kannel-setup__lead,
+.twofactor-kannel-setup__message {
+	color: #53414a;
+	font-size: 15px;
+	line-height: 1.65;
+	margin: 0 0 18px;
+	max-width: 54ch;
+}
+
+.twofactor-kannel-setup__step {
+	display: grid;
+	gap: 16px;
+}
+
+.twofactor-kannel-setup__profile-action,
+.twofactor-kannel-setup__field,
+.twofactor-kannel-setup__manual-fields {
+	display: grid;
+	gap: 8px;
+}
+
+.twofactor-kannel-setup__label {
+	color: #5c4851;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+}
+
+.twofactor-kannel-setup__input,
+.twofactor-kannel-setup__combobox input {
+	background: #fff;
+	border: 1px solid rgba(176, 11, 38, 0.22);
+	border-radius: 14px;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+	color: #1f1318;
+	font-size: 15px;
+	min-height: 52px;
+	padding: 0 15px;
+	width: 100%;
+}
+
+.twofactor-kannel-setup__input:focus,
+.twofactor-kannel-setup__combobox input:focus {
+	border-color: #b00b26;
+	box-shadow: 0 0 0 4px rgba(176, 11, 38, 0.12);
+	outline: none;
+}
+
+.twofactor-kannel-setup__combobox {
+	position: relative;
+}
+
+.twofactor-kannel-setup__dropdown {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 0;
+	right: 0;
+	z-index: 30;
+	max-height: 280px;
+	overflow-y: auto;
+	background: #fff;
+	border: 1px solid rgba(176, 11, 38, 0.16);
+	border-radius: 16px;
+	box-shadow: 0 22px 50px rgba(67, 14, 25, 0.14);
+	padding: 8px;
+}
+
+.twofactor-kannel-setup__dropdown-item {
+	display: block;
+	width: 100%;
+	background: transparent;
+	border: 0;
+	border-radius: 12px;
+	color: #1f1318;
+	cursor: pointer;
+	font-size: 15px;
+	font-weight: 700;
+	padding: 12px 14px;
+	text-align: left;
+}
+
+.twofactor-kannel-setup__dropdown-item:hover,
+.twofactor-kannel-setup__dropdown-item:focus {
+	background: rgba(176, 11, 38, 0.08);
+	outline: none;
+}
+
+.twofactor-kannel-setup__dropdown-empty {
+	color: #7d646e;
+	font-size: 14px;
+	padding: 12px 14px;
+}
+
+.twofactor-kannel-setup__preview {
+	color: #6a4f58;
+	font-size: 14px;
+	margin: -2px 0 0;
+}
+
+.twofactor-kannel-setup__meta {
+	color: #6a4f58;
+	font-size: 13px;
+	margin: 18px 0 0;
+	min-height: 20px;
+}
+
+.twofactor-kannel-setup__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+}
+
+.twofactor-kannel-setup__secondary {
+	background: #fff;
+	border: 1px solid rgba(176, 11, 38, 0.24);
+	border-radius: 999px;
+	color: #b00b26;
+	font-weight: 700;
+	min-height: 44px;
+	padding: 0 16px;
+}
+
+.twofactor-kannel-setup__secondary:hover,
+.twofactor-kannel-setup__secondary:focus {
+	background: rgba(176, 11, 38, 0.06);
+	outline: none;
+}
+
+.twofactor-kannel-setup .primary {
+	background: #b00b26;
+	border: 0;
+	border-radius: 999px;
+	box-shadow: 0 12px 28px rgba(176, 11, 38, 0.18);
+	color: #fff;
+	font-weight: 800;
+	min-height: 46px;
+	padding: 0 22px;
+}
+
+.twofactor-kannel-setup .primary:hover,
+.twofactor-kannel-setup .primary:focus {
+	background: #9c0a21;
+	outline: none;
+}
+
+.twofactor-kannel-setup .warning {
+	background: rgba(176, 11, 38, 0.06);
+	border: 1px solid rgba(176, 11, 38, 0.16);
+	border-radius: 14px;
+	color: #8b1028;
+	margin: 0 0 18px;
+	padding: 12px 14px;
+}
+
+@media (max-width: 640px) {
+	.twofactor-kannel-setup__card {
+		border-radius: 16px;
+		padding: 24px 18px;
+	}
+
+	.twofactor-kannel-setup__title {
+		font-size: 26px;
+	}
+
+	.twofactor-kannel-setup__actions {
+		flex-direction: column;
+	}
+
+	.twofactor-kannel-setup__actions button,
+	.twofactor-kannel-setup__profile-action button {
+		width: 100%;
+	}
+}

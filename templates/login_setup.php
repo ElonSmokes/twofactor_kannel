@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 use OCP\Util;
 
-Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v3');
-Util::addStyle('twofactor_kannel', 'setup');
+Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v4');
+Util::addStyle('twofactor_kannel', 'setup-v2');
 ?>
 <div
 	id="twofactor-kannel-login-setup"
@@ -19,7 +19,6 @@ Util::addStyle('twofactor_kannel', 'setup');
 	data-finish-url="<?php p($_['finishUrl']); ?>"
 	data-revoke-url="<?php p($_['revokeUrl']); ?>"
 	data-show-proceed="<?php p($_['showProceed'] ? '1' : '0'); ?>"
-	data-text-saved-intro="<?php p($l->t('Use your saved phone number or choose another number for SMS verification.')); ?>"
 	data-text-manual-intro="<?php p($l->t('Choose your country and enter your number to receive login codes by SMS.')); ?>"
 	data-text-default-preview="<?php p($l->t('Choose a country and enter the phone number in international format.')); ?>"
 	data-text-preview="<?php p($l->t('Code will be sent to {phone}.')); ?>"
@@ -28,32 +27,25 @@ Util::addStyle('twofactor_kannel', 'setup');
 	data-text-invalid-phone="<?php p($l->t('Choose a country and enter a valid phone number in international format.')); ?>"
 	data-text-code-required="<?php p($l->t('Confirmation code is required')); ?>"
 	data-text-no-country="<?php p($l->t('No matching country')); ?>"
-	data-text-country-placeholder="<?php p($l->t('Type country or code')); ?>"
+	data-text-country-placeholder="<?php p($l->t('Search by country or code')); ?>"
 	data-text-resend="<?php p($l->t('Resend available in {seconds}s')); ?>"
 	data-text-expiry="<?php p($l->t('Code expires in {seconds}s')); ?>"
+	data-text-profile-button="<?php p($l->t('Use profile number {phone}')); ?>"
 >
 	<div class="twofactor-kannel-setup__card">
-		<p class="twofactor-kannel-setup__eyebrow"><?php p($l->t('SMS verification')) ?></p>
+		<p class="twofactor-kannel-setup__eyebrow"><?php p($l->t('Secure sign-in')) ?></p>
 		<h2 class="twofactor-kannel-setup__title"><?php p($l->t('Set up SMS verification')) ?></h2>
-		<p class="twofactor-kannel-setup__lead"><?php p($l->t('Protect your account with one-time login codes sent by SMS.')) ?></p>
+		<p class="twofactor-kannel-setup__lead"><?php p($l->t('Add your mobile number to receive one-time sign-in codes by SMS.')) ?></p>
 
 		<p id="twofactor-kannel-login-setup-message" class="twofactor-kannel-setup__message"></p>
 		<p id="twofactor-kannel-login-setup-error" class="warning twofactor-kannel-setup__error" hidden></p>
 
 		<div id="twofactor-kannel-login-setup-step-identifier" class="twofactor-kannel-setup__step">
-			<div id="twofactor-kannel-login-setup-saved-choice" class="twofactor-kannel-setup__saved-choice" hidden>
-				<p class="twofactor-kannel-setup__section-label"><?php p($l->t('Choose which number to use')) ?></p>
-				<div class="twofactor-kannel-setup__choice-actions">
-					<button id="twofactor-kannel-login-setup-use-saved" class="twofactor-kannel-setup__secondary" type="button">
-						<?php p($l->t('Use saved number')) ?>
-					</button>
-					<button id="twofactor-kannel-login-setup-use-other" class="twofactor-kannel-setup__secondary" type="button">
-						<?php p($l->t('Use another number')) ?>
-					</button>
-				</div>
+			<div id="twofactor-kannel-login-setup-profile-action" class="twofactor-kannel-setup__profile-action" hidden>
+				<button id="twofactor-kannel-login-setup-use-profile" class="twofactor-kannel-setup__secondary" type="button"></button>
 			</div>
 
-			<div id="twofactor-kannel-login-setup-manual-fields" class="twofactor-kannel-setup__manual-fields" hidden>
+			<div class="twofactor-kannel-setup__manual-fields">
 				<label for="twofactor-kannel-login-setup-country-input" class="twofactor-kannel-setup__label">
 					<?php p($l->t('Country')) ?>
 				</label>
@@ -67,7 +59,7 @@ Util::addStyle('twofactor_kannel', 'setup');
 						aria-autocomplete="list"
 						aria-expanded="false"
 						aria-controls="twofactor-kannel-login-setup-country-dropdown"
-						placeholder="<?php p($l->t('Type country or code')) ?>"
+						placeholder="<?php p($l->t('Search by country or code')) ?>"
 					/>
 					<input id="twofactor-kannel-login-setup-country-code" type="hidden" autocomplete="tel-country-code" />
 					<div
@@ -83,13 +75,7 @@ Util::addStyle('twofactor_kannel', 'setup');
 				<label for="twofactor-kannel-login-setup-national-number" class="twofactor-kannel-setup__label">
 					<?php p($l->t('Phone number')) ?>
 				</label>
-				<input
-					id="twofactor-kannel-login-setup-national-number"
-					class="twofactor-kannel-setup__input"
-					type="text"
-					inputmode="tel"
-					autocomplete="tel-national"
-				/>
+				<input id="twofactor-kannel-login-setup-national-number" class="twofactor-kannel-setup__input" type="text" inputmode="tel" autocomplete="tel-national" />
 			</div>
 
 			<p id="twofactor-kannel-login-setup-preview" class="twofactor-kannel-setup__preview"></p>
