@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 use OCP\Util;
 
-Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v5');
-Util::addStyle('twofactor_kannel', 'setup-v3');
+Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v6');
+Util::addStyle('twofactor_kannel', 'setup-v4');
 Util::addStyle('twofactor_kannel', 'flag-icons.min');
 ?>
 <div
@@ -38,7 +38,7 @@ Util::addStyle('twofactor_kannel', 'flag-icons.min');
 
 	<p id="twofactor-kannel-login-setup-error" class="warning twofactor-kannel-setup__error" hidden></p>
 
-	<div id="twofactor-kannel-login-setup-step-identifier" class="twofactor-kannel-setup__step">
+	<div id="twofactor-kannel-login-setup-step-identifier" class="twofactor-kannel-setup__step twofactor-kannel-setup__panel twofactor-kannel-setup__panel--entry">
 		<div class="twofactor-kannel-setup__phone-row">
 			<div class="twofactor-kannel-setup__country-selector">
 				<button
@@ -75,7 +75,7 @@ Util::addStyle('twofactor_kannel', 'flag-icons.min');
 		</div>
 	</div>
 
-	<div id="twofactor-kannel-login-setup-step-code" class="twofactor-kannel-setup__step" hidden>
+	<div id="twofactor-kannel-login-setup-step-code" class="twofactor-kannel-setup__step twofactor-kannel-setup__panel twofactor-kannel-setup__panel--verify" hidden>
 		<input
 			id="twofactor-kannel-login-setup-code"
 			class="twofactor-kannel-setup__code-input"
