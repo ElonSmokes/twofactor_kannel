@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 use OCP\Util;
 
-Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v7');
-Util::addStyle('twofactor_kannel', 'setup-v5');
+Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v8');
+Util::addStyle('twofactor_kannel', 'setup-v6');
 Util::addStyle('twofactor_kannel', 'flag-icons.min');
 ?>
 <div
@@ -28,6 +28,8 @@ Util::addStyle('twofactor_kannel', 'flag-icons.min');
 	data-text-code-required="<?php p($l->t('Confirmation code is required')); ?>"
 	data-text-code-placeholder="<?php p($l->t('Enter the code from SMS')); ?>"
 	data-text-success="<?php p($l->t('SMS verification was activated successfully.')); ?>"
+	data-text-enabled-status="<?php p($l->t('SMS verification is currently active.')); ?>"
+	data-text-current-phone="<?php p($l->t('Current phone number: {phone}')); ?>"
 	data-text-resend="<?php p($l->t('Resend available in {seconds}s')); ?>"
 	data-text-expiry="<?php p($l->t('Code expires in {seconds}s')); ?>"
 >
@@ -91,6 +93,19 @@ Util::addStyle('twofactor_kannel', 'flag-icons.min');
 			</button>
 			<button id="twofactor-kannel-login-setup-cancel" class="twofactor-kannel-setup__secondary" type="button">
 				<?php p($l->t('Cancel')) ?>
+			</button>
+		</div>
+	</div>
+
+	<div id="twofactor-kannel-login-setup-step-enabled" class="twofactor-kannel-setup__step twofactor-kannel-setup__panel twofactor-kannel-setup__panel--enabled" hidden>
+		<p id="twofactor-kannel-login-setup-enabled-status" class="twofactor-kannel-setup__success"></p>
+		<p id="twofactor-kannel-login-setup-enabled-phone" class="twofactor-kannel-setup__success"></p>
+		<div class="twofactor-kannel-setup__actions">
+			<button id="twofactor-kannel-login-setup-change-number" class="twofactor-kannel-setup__secondary" type="button">
+				<?php p($l->t('Change number')) ?>
+			</button>
+			<button id="twofactor-kannel-login-setup-disable" class="twofactor-kannel-setup__secondary" type="button">
+				<?php p($l->t('Disable SMS verification')) ?>
 			</button>
 		</div>
 	</div>

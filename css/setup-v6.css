@@ -1,0 +1,232 @@
+.twofactor-kannel-setup {
+	max-width: 560px;
+	margin: 0 auto;
+	padding: 16px 0 28px;
+}
+
+.twofactor-kannel-setup[hidden],
+.twofactor-kannel-setup__step[hidden],
+.twofactor-kannel-setup__dropdown[hidden],
+.twofactor-kannel-setup__error[hidden],
+.twofactor-kannel-setup__meta[hidden] {
+	display: none !important;
+}
+
+.two-factor-header {
+	display: none;
+}
+
+.twofactor-kannel-setup__hero {
+	text-align: center;
+	margin-bottom: 24px;
+}
+
+.twofactor-kannel-setup__panel {
+	background: #fff;
+	border: 1px solid rgba(176, 11, 38, 0.16);
+	border-radius: 18px;
+	box-shadow: 0 16px 36px rgba(85, 16, 30, 0.08);
+	padding: 22px;
+}
+
+.twofactor-kannel-setup__title {
+	color: #22141a;
+	font-size: 32px;
+	font-weight: 800;
+	letter-spacing: -0.03em;
+	line-height: 1.08;
+	margin: 0 0 12px;
+}
+
+.twofactor-kannel-setup__lead,
+.twofactor-kannel-setup__message,
+.twofactor-kannel-setup__meta {
+	color: #58434b;
+	font-size: 15px;
+	line-height: 1.6;
+	margin: 0 auto 10px;
+	max-width: 40ch;
+}
+
+.twofactor-kannel-setup__step {
+	display: grid;
+	gap: 16px;
+}
+
+.twofactor-kannel-setup__phone-row {
+	display: flex;
+	align-items: center;
+	border: 1px solid rgba(176, 11, 38, 0.22);
+	border-radius: 16px;
+	background: #fff;
+	box-shadow: none;
+	overflow: hidden;
+}
+
+.twofactor-kannel-setup__country-selector {
+	flex: 0 0 118px;
+	position: relative;
+}
+
+.twofactor-kannel-setup__country-button,
+.twofactor-kannel-setup__phone-input,
+.twofactor-kannel-setup__code-input {
+	background: #fff;
+	border: 0;
+	box-shadow: none;
+	color: #1f1318;
+	font-size: 16px;
+	min-height: 56px;
+}
+
+.twofactor-kannel-setup__country-button {
+	appearance: none;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	font-weight: 700;
+	padding: 0 14px;
+	text-align: left;
+	width: 100%;
+}
+
+.twofactor-kannel-setup__country-button .fi,
+.twofactor-kannel-setup__dropdown-item .fi {
+	border-radius: 2px;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+	flex: 0 0 auto;
+	font-size: 18px;
+}
+
+.twofactor-kannel-setup__country-button:hover,
+.twofactor-kannel-setup__country-button:focus,
+.twofactor-kannel-setup__phone-input:focus,
+.twofactor-kannel-setup__code-input:focus {
+	outline: none;
+	box-shadow: none;
+}
+
+.twofactor-kannel-setup__phone-input,
+.twofactor-kannel-setup__code-input {
+	appearance: none;
+	flex: 1 1 auto;
+	padding: 0 16px;
+	width: 100%;
+}
+
+.twofactor-kannel-setup__code-input {
+	border: 1px solid rgba(176, 11, 38, 0.22);
+	border-radius: 16px;
+}
+
+.twofactor-kannel-setup__dropdown {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 0;
+	width: 220px;
+	max-height: 280px;
+	overflow-y: auto;
+	background: #fff;
+	border: 1px solid rgba(176, 11, 38, 0.16);
+	border-radius: 16px;
+	box-shadow: 0 18px 44px rgba(67, 14, 25, 0.14);
+	padding: 8px;
+	z-index: 40;
+}
+
+.twofactor-kannel-setup__dropdown-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	background: transparent;
+	border: 0;
+	border-radius: 12px;
+	color: #1f1318;
+	cursor: pointer;
+	font-size: 15px;
+	font-weight: 700;
+	padding: 12px 14px;
+	text-align: left;
+}
+
+.twofactor-kannel-setup__dropdown-item:hover,
+.twofactor-kannel-setup__dropdown-item:focus {
+	background: rgba(176, 11, 38, 0.08);
+	outline: none;
+}
+
+.twofactor-kannel-setup__actions {
+	display: flex;
+	justify-content: center;
+	gap: 12px;
+}
+
+.twofactor-kannel-setup .primary,
+.twofactor-kannel-setup__secondary {
+	border-radius: 999px;
+	font-weight: 800;
+	min-height: 46px;
+	padding: 0 22px;
+}
+
+.twofactor-kannel-setup .primary {
+	background: #b00b26;
+	border: 0;
+	box-shadow: 0 12px 28px rgba(176, 11, 38, 0.18);
+	color: #fff;
+}
+
+.twofactor-kannel-setup .primary:disabled {
+	background: rgba(176, 11, 38, 0.38);
+	box-shadow: none;
+	cursor: not-allowed;
+}
+
+.twofactor-kannel-setup__secondary {
+	background: #fff;
+	border: 1px solid rgba(176, 11, 38, 0.24);
+	color: #b00b26;
+}
+
+.twofactor-kannel-setup .warning {
+	background: rgba(176, 11, 38, 0.06);
+	border: 1px solid rgba(176, 11, 38, 0.16);
+	border-radius: 14px;
+	color: #8b1028;
+	margin: 0 0 18px;
+	padding: 12px 14px;
+}
+
+.twofactor-kannel-setup__meta {
+	min-height: 22px;
+	margin-top: 16px;
+	text-align: center;
+}
+
+.twofactor-kannel-setup__success {
+	color: #58434b;
+	font-size: 15px;
+	line-height: 1.6;
+	margin: 0 0 16px;
+	text-align: center;
+}
+
+@media (max-width: 640px) {
+	.twofactor-kannel-setup__title {
+		font-size: 26px;
+	}
+
+	.twofactor-kannel-setup__phone-row {
+		align-items: stretch;
+	}
+
+	.twofactor-kannel-setup__actions {
+		flex-direction: column;
+	}
+
+	.twofactor-kannel-setup__actions button {
+		width: 100%;
+	}
+}
