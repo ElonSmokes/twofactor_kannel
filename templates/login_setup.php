@@ -28,7 +28,7 @@ Util::addStyle('twofactor_kannel', 'setup-v10');
 	data-text-success="<?php p($l->t('SMS verification was activated successfully.')); ?>"
 	data-text-enabled-status="<?php p($l->t('SMS verification is currently active.')); ?>"
 	data-text-current-phone="<?php p($l->t('Current phone number: {phone}')); ?>"
-	data-text-profile-hint="<?php p($l->t('To change the phone number, update it in your profile settings.')); ?>"
+	data-text-profile-hint="<?php p($l->t('To change the phone number, contact administrator.')); ?>"
 	data-text-resend="<?php p($l->t('Resend available in {seconds}s')); ?>"
 	data-text-expiry="<?php p($l->t('Code expires in {seconds}s')); ?>"
 >
