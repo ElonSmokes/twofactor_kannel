@@ -43,6 +43,7 @@
     "Country" : "Страна",
     "Phone number" : "Номер телефона",
     "Enter the code from SMS" : "Введите код из SMS",
+    "SMS verification was activated successfully." : "Подтверждение по SMS успешно активировано.",
     "Send code" : "Отправить код",
     "Cancel" : "Отменить",
     "Proceed" : "Продолжить",

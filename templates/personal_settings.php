@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 use OCP\Util;
 
-Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v6');
-Util::addStyle('twofactor_kannel', 'setup-v4');
+Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v7');
+Util::addStyle('twofactor_kannel', 'setup-v5');
 Util::addStyle('twofactor_kannel', 'flag-icons.min');
 ?>
 <div
@@ -27,6 +27,7 @@ Util::addStyle('twofactor_kannel', 'flag-icons.min');
 	data-text-invalid-phone="<?php p($l->t('Choose a country and enter a valid phone number in international format.')); ?>"
 	data-text-code-required="<?php p($l->t('Confirmation code is required')); ?>"
 	data-text-code-placeholder="<?php p($l->t('Enter the code from SMS')); ?>"
+	data-text-success="<?php p($l->t('SMS verification was activated successfully.')); ?>"
 	data-text-resend="<?php p($l->t('Resend available in {seconds}s')); ?>"
 	data-text-expiry="<?php p($l->t('Code expires in {seconds}s')); ?>"
 >
@@ -96,12 +97,12 @@ Util::addStyle('twofactor_kannel', 'flag-icons.min');
 
 	<p id="twofactor-kannel-login-setup-meta" class="twofactor-kannel-setup__meta"></p>
 
-	<form id="twofactor-kannel-login-setup-proceed" method="POST" hidden>
+	<form id="twofactor-kannel-login-setup-proceed" class="twofactor-kannel-setup__panel twofactor-kannel-setup__panel--success" method="POST" hidden>
+		<p class="twofactor-kannel-setup__success"><?php p($l->t('SMS verification was activated successfully.')) ?></p>
 		<div class="twofactor-kannel-setup__actions">
 			<button class="primary" type="submit">
 				<?php p($l->t('Proceed')) ?>
 			</button>
 		</div>
 	</form>
-	</div>
 </div>
