@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 use OCP\Util;
 
-Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v4');
-Util::addStyle('twofactor_kannel', 'setup-v2');
+Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v5');
+Util::addStyle('twofactor_kannel', 'setup-v3');
 ?>
 <div
 	id="twofactor-kannel-login-setup"
@@ -18,106 +18,89 @@ Util::addStyle('twofactor_kannel', 'setup-v2');
 	data-start-url="<?php p($_['startUrl']); ?>"
 	data-finish-url="<?php p($_['finishUrl']); ?>"
 	data-revoke-url="<?php p($_['revokeUrl']); ?>"
+	data-cancel-mode="back"
 	data-show-proceed="<?php p($_['showProceed'] ? '1' : '0'); ?>"
 	data-text-manual-intro="<?php p($l->t('Choose your country and enter your number to receive login codes by SMS.')); ?>"
-	data-text-default-preview="<?php p($l->t('Choose a country and enter the phone number in international format.')); ?>"
-	data-text-preview="<?php p($l->t('Code will be sent to {phone}.')); ?>"
+	data-text-default-preview="<?php p($l->t('Choose a country code and enter your phone number.')); ?>"
 	data-text-sent="<?php p($l->t('A confirmation code was sent to {phone}.')); ?>"
-	data-text-configured="<?php p($l->t('SMS verification is configured for {phone}.')); ?>"
 	data-text-invalid-phone="<?php p($l->t('Choose a country and enter a valid phone number in international format.')); ?>"
 	data-text-code-required="<?php p($l->t('Confirmation code is required')); ?>"
-	data-text-no-country="<?php p($l->t('No matching country')); ?>"
-	data-text-country-placeholder="<?php p($l->t('Search by country or code')); ?>"
+	data-text-code-placeholder="<?php p($l->t('Enter the code from SMS')); ?>"
 	data-text-resend="<?php p($l->t('Resend available in {seconds}s')); ?>"
 	data-text-expiry="<?php p($l->t('Code expires in {seconds}s')); ?>"
-	data-text-profile-button="<?php p($l->t('Use profile number {phone}')); ?>"
 >
-	<div class="twofactor-kannel-setup__card">
-		<p class="twofactor-kannel-setup__eyebrow"><?php p($l->t('Secure sign-in')) ?></p>
+	<div class="twofactor-kannel-setup__hero">
 		<h2 class="twofactor-kannel-setup__title"><?php p($l->t('Set up SMS verification')) ?></h2>
 		<p class="twofactor-kannel-setup__lead"><?php p($l->t('Add your mobile number to receive one-time sign-in codes by SMS.')) ?></p>
-
 		<p id="twofactor-kannel-login-setup-message" class="twofactor-kannel-setup__message"></p>
-		<p id="twofactor-kannel-login-setup-error" class="warning twofactor-kannel-setup__error" hidden></p>
+	</div>
 
-		<div id="twofactor-kannel-login-setup-step-identifier" class="twofactor-kannel-setup__step">
-			<div id="twofactor-kannel-login-setup-profile-action" class="twofactor-kannel-setup__profile-action" hidden>
-				<button id="twofactor-kannel-login-setup-use-profile" class="twofactor-kannel-setup__secondary" type="button"></button>
+	<p id="twofactor-kannel-login-setup-error" class="warning twofactor-kannel-setup__error" hidden></p>
+
+	<div id="twofactor-kannel-login-setup-step-identifier" class="twofactor-kannel-setup__step">
+		<div class="twofactor-kannel-setup__phone-row">
+			<div class="twofactor-kannel-setup__country-selector">
+				<button
+					id="twofactor-kannel-login-setup-country-toggle"
+					class="twofactor-kannel-setup__country-button"
+					type="button"
+					aria-haspopup="listbox"
+					aria-expanded="false"
+					aria-controls="twofactor-kannel-login-setup-country-dropdown"
+				></button>
+				<input id="twofactor-kannel-login-setup-country-code" type="hidden" autocomplete="tel-country-code" />
+				<div
+					id="twofactor-kannel-login-setup-country-dropdown"
+					class="twofactor-kannel-setup__dropdown"
+					role="listbox"
+					hidden
+				></div>
 			</div>
 
-			<div class="twofactor-kannel-setup__manual-fields">
-				<label for="twofactor-kannel-login-setup-country-input" class="twofactor-kannel-setup__label">
-					<?php p($l->t('Country')) ?>
-				</label>
-				<div class="twofactor-kannel-setup__combobox">
-					<input
-						id="twofactor-kannel-login-setup-country-input"
-						class="twofactor-kannel-setup__input"
-						type="text"
-						autocomplete="off"
-						role="combobox"
-						aria-autocomplete="list"
-						aria-expanded="false"
-						aria-controls="twofactor-kannel-login-setup-country-dropdown"
-						placeholder="<?php p($l->t('Search by country or code')) ?>"
-					/>
-					<input id="twofactor-kannel-login-setup-country-code" type="hidden" autocomplete="tel-country-code" />
-					<div
-						id="twofactor-kannel-login-setup-country-dropdown"
-						class="twofactor-kannel-setup__dropdown"
-						role="listbox"
-						hidden
-					></div>
-				</div>
-			</div>
-
-			<div class="twofactor-kannel-setup__field">
-				<label for="twofactor-kannel-login-setup-national-number" class="twofactor-kannel-setup__label">
-					<?php p($l->t('Phone number')) ?>
-				</label>
-				<input id="twofactor-kannel-login-setup-national-number" class="twofactor-kannel-setup__input" type="text" inputmode="tel" autocomplete="tel-national" />
-			</div>
-
-			<p id="twofactor-kannel-login-setup-preview" class="twofactor-kannel-setup__preview"></p>
-
-			<div class="twofactor-kannel-setup__actions">
-				<button id="twofactor-kannel-login-setup-start" class="primary" type="button">
-					<?php p($l->t('Send code')) ?>
-				</button>
-			</div>
+			<input
+				id="twofactor-kannel-login-setup-national-number"
+				class="twofactor-kannel-setup__phone-input"
+				type="text"
+				inputmode="tel"
+				autocomplete="tel-national"
+				placeholder="<?php p($l->t('Phone number')) ?>"
+			/>
 		</div>
 
-		<div id="twofactor-kannel-login-setup-step-code" class="twofactor-kannel-setup__step" hidden>
-			<div class="twofactor-kannel-setup__field">
-				<label for="twofactor-kannel-login-setup-code" class="twofactor-kannel-setup__label">
-					<?php p($l->t('Confirmation code')) ?>
-				</label>
-				<input
-					id="twofactor-kannel-login-setup-code"
-					class="twofactor-kannel-setup__input"
-					type="text"
-					inputmode="numeric"
-					autocomplete="one-time-code"
-				/>
-			</div>
-			<div class="twofactor-kannel-setup__actions">
-				<button id="twofactor-kannel-login-setup-finish" class="primary" type="button">
-					<?php p($l->t('Confirm')) ?>
-				</button>
-				<button id="twofactor-kannel-login-setup-cancel" class="twofactor-kannel-setup__secondary" type="button">
-					<?php p($l->t('Cancel')) ?>
-				</button>
-			</div>
+		<div class="twofactor-kannel-setup__actions">
+			<button id="twofactor-kannel-login-setup-start" class="primary" type="button">
+				<?php p($l->t('Send code')) ?>
+			</button>
 		</div>
+	</div>
 
-		<p id="twofactor-kannel-login-setup-meta" class="twofactor-kannel-setup__meta"></p>
+	<div id="twofactor-kannel-login-setup-step-code" class="twofactor-kannel-setup__step" hidden>
+		<input
+			id="twofactor-kannel-login-setup-code"
+			class="twofactor-kannel-setup__code-input"
+			type="text"
+			inputmode="numeric"
+			autocomplete="one-time-code"
+			placeholder="<?php p($l->t('Enter the code from SMS')) ?>"
+		/>
+		<div class="twofactor-kannel-setup__actions">
+			<button id="twofactor-kannel-login-setup-finish" class="primary" type="button" disabled>
+				<?php p($l->t('Confirm')) ?>
+			</button>
+			<button id="twofactor-kannel-login-setup-cancel" class="twofactor-kannel-setup__secondary" type="button">
+				<?php p($l->t('Cancel')) ?>
+			</button>
+		</div>
+	</div>
 
-		<form id="twofactor-kannel-login-setup-proceed" method="POST" hidden>
-			<div class="twofactor-kannel-setup__actions">
-				<button class="primary" type="submit">
-					<?php p($l->t('Proceed')) ?>
-				</button>
-			</div>
-		</form>
+	<p id="twofactor-kannel-login-setup-meta" class="twofactor-kannel-setup__meta"></p>
+
+	<form id="twofactor-kannel-login-setup-proceed" method="POST" hidden>
+		<div class="twofactor-kannel-setup__actions">
+			<button class="primary" type="submit">
+				<?php p($l->t('Proceed')) ?>
+			</button>
+		</div>
+	</form>
 	</div>
 </div>
