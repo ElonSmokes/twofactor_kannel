@@ -4,6 +4,18 @@
 	padding: 16px 0 28px;
 }
 
+.twofactor-kannel-setup[hidden],
+.twofactor-kannel-setup__step[hidden],
+.twofactor-kannel-setup__dropdown[hidden],
+.twofactor-kannel-setup__error[hidden],
+.twofactor-kannel-setup__meta[hidden] {
+	display: none !important;
+}
+
+.two-factor-header {
+	display: none;
+}
+
 .twofactor-kannel-setup__hero {
 	text-align: center;
 	margin-bottom: 24px;
@@ -45,7 +57,6 @@
 
 .twofactor-kannel-setup__country-selector {
 	position: relative;
-	border-right: 1px solid rgba(176, 11, 38, 0.14);
 }
 
 .twofactor-kannel-setup__country-button,
@@ -60,10 +71,21 @@
 
 .twofactor-kannel-setup__country-button {
 	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 10px;
 	font-weight: 700;
 	padding: 0 14px;
 	text-align: left;
 	width: 100%;
+}
+
+.twofactor-kannel-setup__country-button .fi,
+.twofactor-kannel-setup__dropdown-item .fi {
+	border-radius: 2px;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+	flex: 0 0 auto;
+	font-size: 18px;
 }
 
 .twofactor-kannel-setup__country-button:hover,
@@ -102,7 +124,9 @@
 }
 
 .twofactor-kannel-setup__dropdown-item {
-	display: block;
+	display: flex;
+	align-items: center;
+	gap: 10px;
 	width: 100%;
 	background: transparent;
 	border: 0;

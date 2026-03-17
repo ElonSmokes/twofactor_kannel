@@ -5,6 +5,7 @@ use OCP\Util;
 
 Util::addScript('twofactor_kannel', 'twofactor_kannel-login_setup-v5');
 Util::addStyle('twofactor_kannel', 'setup-v3');
+Util::addStyle('twofactor_kannel', 'flag-icons.min');
 ?>
 <div
 	id="twofactor-kannel-login-setup"
