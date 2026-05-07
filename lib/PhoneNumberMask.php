@@ -14,6 +14,9 @@ class PhoneNumberMask {
 	 */
 	public static function maskNumber(string $number): string {
 		$length = strlen($number);
+		if ($length <= 3) {
+			return str_repeat('*', $length);
+		}
 		$start = $length - 3;
 
 		return str_repeat('*', $start) . substr($number, $start);

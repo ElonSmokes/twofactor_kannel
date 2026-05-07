@@ -178,7 +178,7 @@ abstract class AProvider implements IProvider, IProvidesIcons, IDeactivatableByA
 	public function disableFor(IUser $user) {
 		$state = $this->stateStorage->get($user, $this->getGatewayName());
 		if ($state->getState() === StateStorage::STATE_ENABLED) {
-			$this->stateStorage->persist($state->disabled($user, $this->getGatewayName()));
+			$this->stateStorage->persist(State::disabled($user, $this->getGatewayName()));
 		}
 	}
 }

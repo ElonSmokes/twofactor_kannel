@@ -136,15 +136,13 @@ class StateStorage {
 					'identifier',
 					$state->getIdentifier()
 				);
-				$this->setUserValue(
-					$state->getUser(),
-					$state->getGatewayName(),
-					'verification_code',
-					$state->getVerificationCode()
-				);
-				$this->setUserValue($state->getUser(), $state->getGatewayName(), 'expires_at', (string)$state->getExpiresAt());
-				$this->setUserValue($state->getUser(), $state->getGatewayName(), 'resend_available_at', (string)$state->getResendAvailableAt());
-				$this->setUserValue($state->getUser(), $state->getGatewayName(), 'failed_attempts', '0');
+				// Setup OTP, expiry, and resend windows are no longer meaningful
+				// once enrolment is complete. Clear them so we don't accidentally
+				// expose enrolment-time data later.
+				$this->deleteUserValue($state->getUser(), $state->getGatewayName(), 'verification_code');
+				$this->deleteUserValue($state->getUser(), $state->getGatewayName(), 'expires_at');
+				$this->deleteUserValue($state->getUser(), $state->getGatewayName(), 'resend_available_at');
+				$this->deleteUserValue($state->getUser(), $state->getGatewayName(), 'failed_attempts');
 				$this->setUserValue(
 					$state->getUser(),
 					$state->getGatewayName(),
