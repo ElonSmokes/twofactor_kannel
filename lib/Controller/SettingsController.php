@@ -13,7 +13,9 @@ use OCA\TwoFactorKannel\ResponseDefinitions;
 use OCA\TwoFactorKannel\Service\SetupService;
 use OCP\AppFramework\Http;
 use OCP\AppFramework\Http\Attribute\ApiRoute;
+use OCP\AppFramework\Http\Attribute\BruteForceProtection;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
+use OCP\AppFramework\Http\Attribute\UserRateLimit;
 use OCP\AppFramework\Http\JSONResponse;
 use OCP\AppFramework\OCSController;
 use OCP\IRequest;
@@ -75,6 +77,7 @@ class SettingsController extends OCSController {
 	 * 400: User not found
 	 */
 	#[NoAdminRequired]
+	#[UserRateLimit(limit: 3, period: 90)]
 	#[ApiRoute(verb: 'POST', url: '/settings/{gateway}/verification/start')]
 	public function startVerification(string $gateway, string $identifier): JSONResponse {
 		$user = $this->userSession->getUser();
@@ -110,6 +113,8 @@ class SettingsController extends OCSController {
 	 * 400: User not found
 	 */
 	#[NoAdminRequired]
+	#[UserRateLimit(limit: 10, period: 300)]
+	#[BruteForceProtection(action: 'twofactor_kannel_verify')]
 	#[ApiRoute(verb: 'POST', url: '/settings/{gateway}/verification/finish')]
 	public function finishVerification(string $gateway, string $verificationCode): JSONResponse {
 		$user = $this->userSession->getUser();
@@ -121,7 +126,9 @@ class SettingsController extends OCSController {
 		try {
 			$this->setup->finishSetup($user, $gateway, $verificationCode);
 		} catch (VerificationException $e) {
-			return new JSONResponse(['message' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
+			$response = new JSONResponse(['message' => $e->getMessage()], Http::STATUS_BAD_REQUEST);
+			$response->throttle(['action' => 'twofactor_kannel_verify']);
+			return $response;
 		}
 
 		return new JSONResponse([]);

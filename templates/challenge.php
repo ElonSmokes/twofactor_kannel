@@ -6,6 +6,7 @@
  */
 
 \OCP\Util::addStyle('twofactor_kannel', 'login');
+\OCP\Util::addScript('twofactor_kannel', 'challenge');
 ?>
 
 <img class="two-factor-icon two-factor-gateway-icon" src="<?php print_unescaped(image_path('twofactor_kannel', 'app.svg')); ?>" alt="">
@@ -19,7 +20,7 @@
 		   autocomplete="off"
 		   inputmode="numeric"
 		   autocapitalize="off"
-		   value="<?php echo isset($_['secret']) ? $_['secret'] : '' ?>"
+		   value="<?php p(isset($_['secret']) ? (string)$_['secret'] : '') ?>"
 		   placeholder="<?php p($l->t('Authentication code')) ?>">
 	<button class="primary two-factor-submit" type="submit">
 		<?php p($l->t('Submit')); ?>
@@ -27,42 +28,10 @@
 	<p><?php p($l->t('An access code has been sent to %s', [$_['phone']])); ?></p>
 	<p id="twofactor-kannel-challenge-timer"
 	   data-resend-at="<?php p((string)$_['resendAvailableAt']); ?>"
-	   data-expires-at="<?php p((string)$_['expiresAt']); ?>"></p>
+	   data-expires-at="<?php p((string)$_['expiresAt']); ?>"
+	   data-text-resend="<?php p($l->t('Resend available in {seconds}s')); ?>"
+	   data-text-expiry="<?php p($l->t('Code expires in {seconds}s')); ?>"></p>
 	<button id="twofactor-kannel-resend" type="button" disabled="disabled">
 		<?php p($l->t('Resend code')); ?>
 	</button>
 </form>
-<script>
-(function() {
-	const timer = document.getElementById('twofactor-kannel-challenge-timer');
-	const button = document.getElementById('twofactor-kannel-resend');
-	if (!timer || !button) {
-		return;
-	}
-	function update() {
-		const now = Date.now() / 1000;
-		const resendAt = Number(timer.dataset.resendAt || '0');
-		const expiresAt = Number(timer.dataset.expiresAt || '0');
-		const resendSeconds = Math.max(0, Math.ceil(resendAt - now));
-		const expirySeconds = Math.max(0, Math.ceil(expiresAt - now));
-		const parts = [];
-		if (resendSeconds > 0) {
-			parts.push('Resend available in ' + resendSeconds + 's');
-			button.disabled = true;
-		} else {
-			button.disabled = false;
-		}
-		if (expirySeconds > 0) {
-			parts.push('Code expires in ' + expirySeconds + 's');
-		}
-		timer.textContent = parts.join(' | ');
-	}
-	button.addEventListener('click', function() {
-		const url = new URL(window.location.href);
-		url.searchParams.set('resend', '1');
-		window.location.href = url.toString();
-	});
-	update();
-	window.setInterval(update, 1000);
-})();
-</script>
