@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace OCA\TwoFactorKannel\Command;
 
 use OCA\TwoFactorKannel\Exception\InvalidProviderException;
+use OCA\TwoFactorKannel\Exception\MessageTransmissionException;
+use OCA\TwoFactorKannel\PhoneNumberNormalizer;
 use OCA\TwoFactorKannel\Provider\Gateway\Factory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -31,8 +33,14 @@ class Test extends Command {
 
 	#[\Override]
 	protected function execute(InputInterface $input, OutputInterface $output) {
-		$identifier = $input->getArgument('identifier');
+		$identifier = (string)$input->getArgument('identifier');
 		$gatewayName = 'sms';
+
+		$normalized = PhoneNumberNormalizer::normalize($identifier);
+		if ($normalized === '') {
+			$output->writeln('<error>Recipient must be a valid international phone number (e.g. +441234567890)</error>');
+			return 1;
+		}
 
 		try {
 			$gateway = $this->gatewayFactory->get($gatewayName);
@@ -53,12 +61,19 @@ class Test extends Command {
 		$output->writeln('<info>════════════════════════════════════════════════════════════════</info>');
 		$output->writeln('');
 		$output->writeln('  <comment>Gateway:</comment>     kannel');
-		$output->writeln('  <comment>Recipient:</comment>   ' . $identifier);
+		$output->writeln('  <comment>Recipient:</comment>   ' . $normalized);
 		$output->writeln('  <comment>Message:</comment>     ' . $message);
 		$output->writeln('');
 		$output->writeln('<info>Sending message...</info>');
 
-		$gateway->send($identifier, $message);
+		try {
+			$gateway->send($normalized, $message);
+		} catch (MessageTransmissionException $e) {
+			$output->writeln('');
+			$output->writeln('<error>✗ Message transmission failed: ' . $e->getMessage() . '</error>');
+			$output->writeln('');
+			return 1;
+		}
 
 		$output->writeln('');
 		$output->writeln('<info>✓ Message successfully sent!</info>');

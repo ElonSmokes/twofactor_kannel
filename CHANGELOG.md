@@ -15,6 +15,42 @@ Types of changes:
 - *Fixed* for any bug fixes.
 - *Security* in case of vulnerabilities. 
 
+## Unreleased - production-hardening branch
+### Security
+- Kannel transport now sends `username`, `password`, `to`, and `text` in the
+  request **body** via POST instead of as URL query parameters. Credentials and
+  the OTP-bearing message body no longer leak to Kannel access logs or upstream
+  proxy logs.
+- Kannel URL is now validated (must use http or https, host required) before
+  any outbound request. Defence-in-depth against an attacker-controlled
+  `sms_url` config value.
+- Setup-time OTP fields (`verification_code`, `expires_at`,
+  `resend_available_at`, `failed_attempts`) are now cleared from user_config
+  when an enrolment completes. Previously the OTP hash and timing windows
+  were retained indefinitely after enrolment.
+
+### Fixed
+- `Kannel::send` now treats both `0:` (Accepted) and `3:` (Queued for later
+  delivery) as success, matching the documented Kannel `sendsms` semantics.
+  Previously legitimate queued deliveries were rejected.
+- `Kannel::send` now sets explicit connect (5s) and total (15s) HTTP
+  timeouts; previously the request could hang indefinitely.
+- `PhoneNumberMask::maskNumber` no longer throws `ValueError` on inputs
+  shorter than three characters.
+- `twofactorauth:kannel:test` command now catches `MessageTransmissionException`
+  and prints a clear error rather than emitting a stack trace, and validates
+  that the recipient is a valid international phone number before attempting
+  to send.
+- `AProvider::disableFor` now invokes `State::disabled(...)` statically.
+
+### Added
+- `OCA\TwoFactorKannel\PhoneNumberNormalizer` — pure-static normaliser
+  extracted from `UserPhoneService` so the validation logic is unit-testable
+  without instantiating the Nextcloud framework.
+- PHPUnit test suite (`tests/php/Unit/`) covering phone normalization, phone
+  masking, and Kannel response parsing. Run with
+  `php vendor-bin/unit/vendor/phpunit/phpunit/phpunit`.
+
 ## 2.2.1 - 2026-02-10
 ### Changed
 - Make compatible with Go WhatsApp v8

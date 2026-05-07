@@ -16,6 +16,8 @@ use OCA\TwoFactorKannel\Provider\FieldDefinition;
 use OCA\TwoFactorKannel\Provider\Settings;
 use OCP\Http\Client\IClient;
 use OCP\Http\Client\IClientService;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * @method string getUrl()
@@ -28,12 +30,26 @@ use OCP\Http\Client\IClientService;
  * @method static setSender(string $sender)
  */
 class Kannel extends AProvider {
+	private const HTTP_CONNECT_TIMEOUT = 5;
+	private const HTTP_TIMEOUT = 15;
+
+	/**
+	 * Kannel `sendsms` response codes that indicate the message was accepted
+	 * for delivery (success). See Kannel User's Guide §7.5 (HTTP Interface).
+	 *  - 0: Message accepted for delivery
+	 *  - 3: Queued for later delivery
+	 */
+	private const SUCCESS_PREFIXES = ['0:', '3:'];
+
 	private IClient $client;
+	private LoggerInterface $logger;
 
 	public function __construct(
 		IClientService $clientService,
+		?LoggerInterface $logger = null,
 	) {
 		$this->client = $clientService->newClient();
+		$this->logger = $logger ?? new NullLogger();
 	}
 
 	public function createSettings(): Settings {
@@ -71,7 +87,13 @@ class Kannel extends AProvider {
 			throw new MessageTransmissionException('Phone number is empty after normalization');
 		}
 
-		$query = [
+		$url = $this->getUrl();
+		$this->assertUrlSafe($url);
+
+		// Credentials and OTP-bearing message body MUST be sent in the request body
+		// (POST), not the URL query string, so they don't leak into Kannel access
+		// logs or upstream proxy logs.
+		$body = [
 			'username' => $this->getUsername(),
 			'password' => $this->getPassword(),
 			'to' => '++' . $normalizedIdentifier,
@@ -81,24 +103,59 @@ class Kannel extends AProvider {
 		try {
 			$sender = $this->getSender();
 			if ($sender !== '') {
-				$query['from'] = $sender;
+				$body['from'] = $sender;
 			}
 		} catch (\Throwable) {
 			// Optional field not configured.
 		}
 
 		try {
-			$response = $this->client->get($this->getUrl(), [
-				'query' => $query,
+			$response = $this->client->post($url, [
+				'body' => $body,
+				'connect_timeout' => self::HTTP_CONNECT_TIMEOUT,
+				'timeout' => self::HTTP_TIMEOUT,
+				'verify' => true,
 			]);
 		} catch (Exception $ex) {
+			$this->logger->warning('Kannel sendsms request failed', [
+				'app' => 'twofactor_kannel',
+				'exception' => $ex,
+			]);
 			throw new MessageTransmissionException('Kannel request failed', $ex->getCode(), $ex);
 		}
 
-		$body = trim((string)$response->getBody());
+		$responseBody = trim((string)$response->getBody());
 		$status = $response->getStatusCode();
-		if ($status < 200 || $status >= 300 || !str_starts_with($body, '0:')) {
-			throw new MessageTransmissionException($body !== '' ? $body : 'Kannel rejected the SMS');
+		if ($status < 200 || $status >= 300 || !$this->isSuccessBody($responseBody)) {
+			$this->logger->warning('Kannel sendsms rejected', [
+				'app' => 'twofactor_kannel',
+				'http_status' => $status,
+				'body' => $responseBody,
+			]);
+			throw new MessageTransmissionException($responseBody !== '' ? $responseBody : 'Kannel rejected the SMS');
 		}
+	}
+
+	private function assertUrlSafe(string $url): void {
+		if ($url === '') {
+			throw new MessageTransmissionException('Kannel URL is not configured');
+		}
+		$parts = parse_url($url);
+		if (!is_array($parts) || !isset($parts['scheme'], $parts['host'])) {
+			throw new MessageTransmissionException('Kannel URL is malformed');
+		}
+		$scheme = strtolower($parts['scheme']);
+		if ($scheme !== 'http' && $scheme !== 'https') {
+			throw new MessageTransmissionException('Kannel URL must use http or https');
+		}
+	}
+
+	public static function isSuccessBody(string $body): bool {
+		foreach (self::SUCCESS_PREFIXES as $prefix) {
+			if (str_starts_with($body, $prefix)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
